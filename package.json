@@ -4,13 +4,13 @@
   "version": "1.0.0",
   "description": "Aesthetic, minimalist, and ultra-smooth Pomodoro & interval focus timer with animated radial ambient aura, customizable routine chains, scheduled triggers, and synthesized chimes.",
   "type": "module",
-  "homepage": "https://github.com/HawkdotDev/pomomer#readme",
+  "homepage": "https://hawkdotdev.github.io/modo/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/HawkdotDev/pomomer.git"
+    "url": "https://github.com/HawkdotDev/modo.git"
   },
   "bugs": {
-    "url": "https://github.com/HawkdotDev/pomomer/issues"
+    "url": "https://github.com/HawkdotDev/modo/issues"
   },
   "keywords": [
     "pomodoro",
@@ -33,7 +33,9 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predeploy": "vite build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "lucide-react": "^0.344.0",
@@ -51,6 +53,7 @@
     "eslint": "^9.9.1",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.11",
+    "gh-pages": "^6.3.0",
     "globals": "^15.9.0",
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1",
