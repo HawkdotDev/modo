@@ -24,10 +24,15 @@ export interface PresetChain {
   presets: ChainedPreset[];
 }
 
+export type ClockStyle = 'minimal' | 'lofi' | 'flip' | 'cyber' | 'cafe' | 'zen' | 'giant';
+
+export type TimerMode = 'work' | 'break';
+
 export interface ThemeColors {
   background: string;
   workColor: string;
   breakColor: string;
+  accentColor?: string;
   text: string;
 }
 
@@ -122,6 +127,7 @@ export const lightTheme: ThemeColors = {
   background: '#f8fafc',
   workColor: '#f43f5e',
   breakColor: '#10b981',
+  accentColor: '#f43f5e',
   text: '#0f172a'
 };
 
@@ -129,5 +135,6 @@ export const darkTheme: ThemeColors = {
   background: '#000000',
   workColor: '#f43f5e',
   breakColor: '#10b981',
+  accentColor: '#f43f5e',
   text: '#ffffff'
 };

@@ -81,19 +81,22 @@ export function ScheduleForm({
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-semibold text-neutral-300">Schedule Label</label>
+          <label htmlFor="schedule-form-label" className="text-xs font-semibold text-neutral-300 cursor-pointer">Schedule Label</label>
           <input
+            id="schedule-form-label"
+            name="scheduleLabel"
             type="text"
             value={name}
             placeholder="e.g. Daily Standup Focus"
             onChange={(e) => setName(e.target.value)}
+            aria-label="Schedule Label"
             className="px-3.5 py-2.5 bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-rose-500/50 focus:ring-1 focus:ring-rose-500/50"
             required
           />
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-semibold text-neutral-300">Target Type</label>
+          <span className="text-xs font-semibold text-neutral-300">Target Type</span>
           <div className="flex gap-2 p-1 bg-white/[0.03] border border-white/[0.06] rounded-xl">
             <button
               type="button"
@@ -127,12 +130,15 @@ export function ScheduleForm({
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-semibold text-neutral-300">
+          <label htmlFor="schedule-target-select" className="text-xs font-semibold text-neutral-300 cursor-pointer">
             Select {selectedType === 'preset' ? 'Preset' : 'Chain'}
           </label>
           <select
+            id="schedule-target-select"
+            name="targetId"
             value={selectedId}
             onChange={(e) => setSelectedId(e.target.value)}
+            aria-label={`Select ${selectedType === 'preset' ? 'Preset' : 'Chain'}`}
             className="w-full px-3 py-2 bg-black/50 border border-white/[0.08] rounded-xl text-xs text-white focus:outline-none focus:border-rose-500/50"
           >
             {selectedType === 'preset' ? (
@@ -153,21 +159,27 @@ export function ScheduleForm({
 
         <div className="grid grid-cols-2 gap-3">
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-neutral-300">Trigger Time</label>
+            <label htmlFor="schedule-trigger-time" className="text-xs font-semibold text-neutral-300 cursor-pointer">Trigger Time</label>
             <input
+              id="schedule-trigger-time"
+              name="startTime"
               type="time"
               value={startTime}
               onChange={(e) => setStartTime(e.target.value)}
+              aria-label="Trigger Time"
               className="px-3.5 py-2 bg-white/[0.04] border border-white/[0.08] rounded-xl text-xs font-mono text-white focus:outline-none focus:border-rose-500/50"
               required
             />
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-neutral-300">Frequency</label>
+            <label htmlFor="schedule-frequency-select" className="text-xs font-semibold text-neutral-300 cursor-pointer">Frequency</label>
             <select
+              id="schedule-frequency-select"
+              name="recurrence"
               value={recurrence}
               onChange={(e) => setRecurrence(e.target.value as RecurrenceType)}
+              aria-label="Frequency"
               className="px-3 py-2 bg-black/50 border border-white/[0.08] rounded-xl text-xs text-white focus:outline-none focus:border-rose-500/50"
             >
               <option value={RecurrenceType.NONE} className="bg-neutral-900">One-time</option>

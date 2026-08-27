@@ -7,6 +7,8 @@ interface CircularProgressProps {
   breakColor: string;
   children: ReactNode;
   size?: number;
+  smooth?: boolean;
+  isRunning?: boolean;
 }
 
 export function CircularProgress({
@@ -15,9 +17,11 @@ export function CircularProgress({
   workColor,
   breakColor,
   children,
-  size = 320
+  size = 420,
+  smooth = true,
+  isRunning = false
 }: CircularProgressProps) {
-  const strokeWidth = 10;
+  const strokeWidth = 11;
   const radius = size / 2;
   const normalizedRadius = radius - strokeWidth * 2;
   const circumference = normalizedRadius * 2 * Math.PI;
@@ -74,7 +78,9 @@ export function CircularProgress({
           strokeDasharray={`${circumference} ${circumference}`}
           style={{ 
             strokeDashoffset,
-            transition: 'stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.5s ease'
+            transition: smooth && isRunning
+              ? 'stroke 0.5s ease'
+              : 'stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.5s ease'
           }}
           strokeLinecap="round"
           r={normalizedRadius}

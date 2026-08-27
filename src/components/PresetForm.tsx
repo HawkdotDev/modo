@@ -62,12 +62,15 @@ export function PresetForm({
       </div>
       
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-semibold text-neutral-300">Preset Name</label>
+        <label htmlFor="preset-form-name" className="text-xs font-semibold text-neutral-300 cursor-pointer">Preset Name</label>
         <input
+          id="preset-form-name"
+          name="presetName"
           type="text"
           value={name}
           placeholder="e.g. Ultra Focus"
           onChange={(e) => setName(e.target.value)}
+          aria-label="Preset Name"
           className="px-3.5 py-2.5 bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-rose-500/50 focus:ring-1 focus:ring-rose-500/50 transition-all"
           required
         />
@@ -75,38 +78,47 @@ export function PresetForm({
 
       <div className="grid grid-cols-2 gap-3">
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-semibold text-neutral-300">Work Duration (m)</label>
+          <label htmlFor="preset-form-work-minutes" className="text-xs font-semibold text-neutral-300 cursor-pointer">Work Duration (m)</label>
           <input
+            id="preset-form-work-minutes"
+            name="workMinutes"
             type="number"
             min="1"
             max="120"
             value={workMinutes}
             onChange={(e) => setWorkMinutes(Math.max(1, parseInt(e.target.value) || 1))}
+            aria-label="Work Duration in Minutes"
             className="px-3.5 py-2.5 bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm font-mono text-white focus:outline-none focus:border-rose-500/50 focus:ring-1 focus:ring-rose-500/50"
           />
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-semibold text-neutral-300">Break Duration (m)</label>
+          <label htmlFor="preset-form-break-minutes" className="text-xs font-semibold text-neutral-300 cursor-pointer">Break Duration (m)</label>
           <input
+            id="preset-form-break-minutes"
+            name="breakMinutes"
             type="number"
             min="1"
             max="60"
             value={breakMinutes}
             onChange={(e) => setBreakMinutes(Math.max(1, parseInt(e.target.value) || 1))}
+            aria-label="Break Duration in Minutes"
             className="px-3.5 py-2.5 bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm font-mono text-white focus:outline-none focus:border-rose-500/50 focus:ring-1 focus:ring-rose-500/50"
           />
         </div>
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-semibold text-neutral-300">Number of Rounds</label>
+        <label htmlFor="preset-form-iterations" className="text-xs font-semibold text-neutral-300 cursor-pointer">Number of Rounds</label>
         <input
+          id="preset-form-iterations"
+          name="iterations"
           type="number"
           min="1"
           max="12"
           value={iterations}
           onChange={(e) => setIterations(Math.max(1, parseInt(e.target.value) || 1))}
+          aria-label="Number of Rounds"
           className="px-3.5 py-2.5 bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm font-mono text-white focus:outline-none focus:border-rose-500/50 focus:ring-1 focus:ring-rose-500/50"
         />
       </div>

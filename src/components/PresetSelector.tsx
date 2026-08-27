@@ -29,7 +29,7 @@ export function PresetSelector({
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.08] hover:bg-white/[0.15] text-xs font-semibold text-white border border-white/[0.1] shadow-sm transition-all"
           >
             <Plus size={14} />
-            New Preset
+            New
           </button>
           {onClose && (
             <button

@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
 import { NotificationSettings as NotificationSettingsType } from '../types/timer';
 import { Switch } from './Switch';
-import { Bell, Volume2, Play, AlertCircle } from 'lucide-react';
-import { playNotificationSound } from '../utils/notifications';
+import { Bell, AlertCircle, Sparkles } from 'lucide-react';
 
 interface NotificationSettingsProps {
   settings: NotificationSettingsType;
   onUpdate: (settings: NotificationSettingsType) => void;
+  accentColor?: string;
   onClose?: () => void;
 }
 
-export function NotificationSettings({ settings, onUpdate, onClose }: NotificationSettingsProps) {
+export function NotificationSettings({ settings, onUpdate, accentColor = '#f43f5e', onClose }: NotificationSettingsProps) {
   const [permissionDenied, setPermissionDenied] = useState(false);
 
   useEffect(() => {
@@ -37,16 +37,13 @@ export function NotificationSettings({ settings, onUpdate, onClose }: Notificati
     }
   };
 
-  const handleTestSound = () => {
-    playNotificationSound('test', settings.volume);
-  };
-
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-4 w-full">
+      {/* Header */}
       <div className="flex justify-between items-start">
         <div>
-          <h3 className="text-base font-semibold text-white">Notifications & Sound</h3>
-          <p className="text-xs text-neutral-400">Desktop alerts and audible cues</p>
+          <h3 className="text-base font-semibold text-white">Desktop Notifications</h3>
+          <p className="text-xs text-neutral-400">System banners when timer transitions</p>
         </div>
         {onClose && (
           <button
@@ -60,115 +57,82 @@ export function NotificationSettings({ settings, onUpdate, onClose }: Notificati
         )}
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {/* Master Notification Toggle */}
-        <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-3">
+        <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-3 hover:border-white/[0.1] transition-all">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20">
-                <Bell size={18} />
+            <div className="flex items-center gap-2.5">
+              <div 
+                className="p-2 rounded-xl bg-white/[0.05] border border-white/[0.08]"
+                style={{ color: accentColor }}
+              >
+                <Bell size={16} />
               </div>
               <div>
-                <span className="text-sm font-semibold text-white block">Desktop Notifications</span>
-                <span className="text-xs text-neutral-400">Alerts when session transitions</span>
+                <span className="text-sm font-semibold text-white block">Desktop Alerts</span>
+                <span className="text-xs text-neutral-400">OS notifications on background tabs</span>
               </div>
             </div>
-            <Switch checked={settings.enabled} onChange={handleToggleNotifications} />
+            <Switch
+              checked={settings.enabled}
+              onChange={handleToggleNotifications}
+              activeColor={accentColor}
+            />
           </div>
           
           {permissionDenied && (
             <div className="flex items-center gap-2 p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-300">
               <AlertCircle size={14} className="shrink-0" />
-              <span>Notifications blocked by browser. Please enable permissions in address bar.</span>
+              <span>Notifications blocked by browser. Please allow notifications in site permissions.</span>
             </div>
           )}
         </div>
 
-        {/* Sound Controls */}
-        <div className={`p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-4 transition-opacity ${
+        {/* Granular Notification Triggers */}
+        <div className={`p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-2.5 transition-all ${
           settings.enabled ? 'opacity-100' : 'opacity-40 pointer-events-none'
         }`}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                <Volume2 size={18} />
-              </div>
-              <div>
-                <span className="text-sm font-semibold text-white block">Audio Chimes</span>
-                <span className="text-xs text-neutral-400">Synthesized acoustic bell cues</span>
-              </div>
-            </div>
-            <Switch
-              checked={settings.sound}
-              onChange={(checked) => onUpdate({ ...settings, sound: checked })}
-              disabled={!settings.enabled}
-            />
-          </div>
-
-          {settings.sound && (
-            <div className="pt-2 border-t border-white/[0.06] space-y-3">
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-medium text-neutral-300">Volume</span>
-                <button
-                  onClick={handleTestSound}
-                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-neutral-200 transition-all"
-                  title="Test sound chime"
-                  disabled={!settings.enabled}
-                >
-                  <Play size={12} />
-                  Test Chime
-                </button>
-              </div>
-
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.05"
-                value={settings.volume}
-                onChange={(e) => onUpdate({ ...settings, volume: parseFloat(e.target.value) })}
-                className="w-full h-1.5 bg-white/[0.1] rounded-lg appearance-none cursor-pointer accent-rose-500"
-                disabled={!settings.enabled}
-              />
-              <div className="flex justify-between text-[10px] font-mono text-neutral-500">
-                <span>Mute</span>
-                <span>{Math.round(settings.volume * 100)}%</span>
-                <span>Max</span>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Granular Triggers */}
-        <div className={`p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-3 transition-opacity ${
-          settings.enabled ? 'opacity-100' : 'opacity-40 pointer-events-none'
-        }`}>
-          <span className="text-xs font-bold uppercase tracking-wider text-neutral-400 block mb-2">Trigger Triggers</span>
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400 flex items-center gap-1.5 mb-1">
+            <Sparkles size={12} style={{ color: accentColor }} />
+            Notification Triggers
+          </span>
           
-          <div className="flex items-center justify-between py-1">
-            <span className="text-sm text-neutral-300">Focus round completed</span>
+          <div className="flex items-center justify-between py-1 border-b border-white/[0.04]">
+            <div>
+              <span className="text-xs font-semibold text-neutral-200 block">Focus round completed</span>
+              <span className="text-[10px] text-neutral-400">Alert when work session ends</span>
+            </div>
             <Switch
               checked={settings.workComplete}
               onChange={(checked) => onUpdate({ ...settings, workComplete: checked })}
               disabled={!settings.enabled}
+              activeColor={accentColor}
             />
           </div>
 
-          <div className="flex items-center justify-between py-1">
-            <span className="text-sm text-neutral-300">Break interval completed</span>
+          <div className="flex items-center justify-between py-1 border-b border-white/[0.04]">
+            <div>
+              <span className="text-xs font-semibold text-neutral-200 block">Break interval completed</span>
+              <span className="text-[10px] text-neutral-400">Alert when rest period ends</span>
+            </div>
             <Switch
               checked={settings.breakComplete}
               onChange={(checked) => onUpdate({ ...settings, breakComplete: checked })}
               disabled={!settings.enabled}
+              activeColor={accentColor}
             />
           </div>
 
           <div className="flex items-center justify-between py-1">
-            <span className="text-sm text-neutral-300">All iterations completed</span>
+            <div>
+              <span className="text-xs font-semibold text-neutral-200 block">All iterations completed</span>
+              <span className="text-[10px] text-neutral-400">Alert when full session finishes</span>
+            </div>
             <Switch
               checked={settings.sessionComplete}
               onChange={(checked) => onUpdate({ ...settings, sessionComplete: checked })}
               disabled={!settings.enabled}
+              activeColor={accentColor}
             />
           </div>
         </div>

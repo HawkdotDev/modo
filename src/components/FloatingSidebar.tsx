@@ -5,15 +5,16 @@ import {
   Clock, 
   Palette, 
   Bell, 
+  Headphones,
+  Layout,
+  Video as VideoIcon,
   ChevronLeft,
   X,
   Plus, 
   Minus, 
   Flame, 
   Coffee, 
-  Layers, 
-  Volume2, 
-  VolumeX 
+  Layers 
 } from 'lucide-react';
 import { Switch } from './Switch';
 import { PresetSelector } from './PresetSelector';
@@ -23,15 +24,20 @@ import { PresetChainForm } from './PresetChainForm';
 import { ScheduleManager } from './scheduling/ScheduleManager';
 import { ColorPicker } from './ColorPicker';
 import { NotificationSettings } from './NotificationSettings';
+import { AudioSettings } from './AudioSettings';
+import { StyleSelector } from './StyleSelector';
+import { VideoSettings } from './VideoSettings';
 import { 
   TimerPreset, 
   PresetChain, 
   ThemeColors, 
   Schedule, 
+  ClockStyle,
   NotificationSettings as NotificationSettingsType 
 } from '../types/timer';
+import { VideoItem, VideoBackgroundConfig } from '../types/video';
 
-export type FloatingTabType = 'quick' | 'chains' | 'presets' | 'schedules' | 'theme' | 'alerts';
+export type FloatingTabType = 'quick' | 'chains' | 'presets' | 'schedules' | 'styles' | 'videos' | 'theme' | 'alerts' | 'audio';
 
 interface QuickSettingsContentProps {
   workMinutes: number;
@@ -46,10 +52,9 @@ interface QuickSettingsContentProps {
   onBreakSecondsChange: (value: number) => void;
   onIterationsChange: (value: number) => void;
   onRequireManualStartChange: (value: boolean) => void;
-  soundEnabled?: boolean;
-  volume?: number;
-  onToggleSound?: (enabled: boolean) => void;
-  onVolumeChange?: (volume: number) => void;
+  smoothProgress?: boolean;
+  onToggleSmoothProgress?: (enabled: boolean) => void;
+  accentColor?: string;
   disabled?: boolean;
   onClose?: () => void;
 }
@@ -67,10 +72,9 @@ export function QuickSettingsContent({
   onBreakSecondsChange,
   onIterationsChange,
   onRequireManualStartChange,
-  soundEnabled = true,
-  volume = 0.5,
-  onToggleSound,
-  onVolumeChange,
+  smoothProgress = true,
+  onToggleSmoothProgress,
+  accentColor = '#f43f5e',
   disabled = false,
   onClose
 }: QuickSettingsContentProps) {
@@ -135,9 +139,13 @@ export function QuickSettingsContent({
                 disabled={disabled}
                 className={`p-3 rounded-xl border text-left transition-all ${
                   isActive
-                    ? 'bg-rose-500/15 border-rose-500/50 text-white shadow-sm'
+                    ? 'text-white shadow-sm'
                     : 'bg-white/[0.03] hover:bg-white/[0.07] border-white/[0.06] text-neutral-300'
                 }`}
+                style={isActive ? {
+                  backgroundColor: `${accentColor}20`,
+                  borderColor: `${accentColor}80`
+                } : {}}
               >
                 <div className="text-sm font-semibold text-white">{tmpl.name}</div>
                 <div className="text-xs font-mono text-neutral-400 mt-1">{tmpl.work}m / {tmpl.break}m</div>
@@ -151,10 +159,10 @@ export function QuickSettingsContent({
       <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-2.5 hover:border-white/[0.1] transition-all">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 font-medium text-neutral-200">
-            <Flame size={15} className="text-rose-400" />
+            <Flame size={15} style={{ color: accentColor }} />
             <span className="text-sm font-semibold">Focus Duration</span>
           </div>
-          <span className="font-mono text-sm font-bold text-rose-400">
+          <span className="font-mono text-sm font-bold" style={{ color: accentColor }}>
             {workMinutes}m {workSeconds > 0 ? `${workSeconds}s` : ''}
           </span>
         </div>
@@ -184,23 +192,29 @@ export function QuickSettingsContent({
           {/* Centered Min/Sec Inputs */}
           <div className="flex items-center gap-1 bg-black/50 px-2.5 py-1.5 rounded-xl border border-white/[0.1]">
             <input
+              id="sidebar-focus-minutes"
+              name="workMinutes"
               type="number"
               min="1"
               max="120"
               value={workMinutes}
               onChange={(e) => onWorkMinutesChange(Math.max(1, Math.min(120, parseInt(e.target.value) || 1)))}
               disabled={disabled}
+              aria-label="Focus Minutes"
               className="w-8 text-center bg-transparent text-white font-mono text-sm font-bold focus:outline-none"
               title="Focus Minutes"
             />
             <span className="text-neutral-500 font-mono text-xs">:</span>
             <input
+              id="sidebar-focus-seconds"
+              name="workSeconds"
               type="number"
               min="0"
               max="59"
               value={workSeconds}
               onChange={(e) => onWorkSecondsChange(Math.max(0, Math.min(59, parseInt(e.target.value) || 0)))}
               disabled={disabled}
+              aria-label="Focus Seconds"
               className="w-8 text-center bg-transparent text-white font-mono text-sm font-bold focus:outline-none"
               title="Focus Seconds"
             />
@@ -266,23 +280,29 @@ export function QuickSettingsContent({
           {/* Centered Min/Sec Inputs */}
           <div className="flex items-center gap-1 bg-black/50 px-2.5 py-1.5 rounded-xl border border-white/[0.1]">
             <input
+              id="sidebar-break-minutes"
+              name="breakMinutes"
               type="number"
               min="1"
               max="60"
               value={breakMinutes}
               onChange={(e) => onBreakMinutesChange(Math.max(1, Math.min(60, parseInt(e.target.value) || 1)))}
               disabled={disabled}
+              aria-label="Break Minutes"
               className="w-8 text-center bg-transparent text-white font-mono text-sm font-bold focus:outline-none"
               title="Break Minutes"
             />
             <span className="text-neutral-500 font-mono text-xs">:</span>
             <input
+              id="sidebar-break-seconds"
+              name="breakSeconds"
               type="number"
               min="0"
               max="59"
               value={breakSeconds}
               onChange={(e) => onBreakSecondsChange(Math.max(0, Math.min(59, parseInt(e.target.value) || 0)))}
               disabled={disabled}
+              aria-label="Break Seconds"
               className="w-8 text-center bg-transparent text-white font-mono text-sm font-bold focus:outline-none"
               title="Break Seconds"
             />
@@ -346,51 +366,7 @@ export function QuickSettingsContent({
         </div>
       </div>
 
-      {/* Section 5: Audio Chimes & Volume */}
-      <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-2 hover:border-white/[0.1] transition-all">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-white/[0.05] text-neutral-300 border border-white/[0.08]">
-              {soundEnabled ? (
-                <Volume2 size={16} className="text-rose-400" />
-              ) : (
-                <VolumeX size={16} className="text-neutral-500" />
-              )}
-            </div>
-            <div>
-              <span className="text-sm font-semibold text-white block">Audio Chimes</span>
-              <span className="text-xs text-neutral-400">Synthesized audio cues</span>
-            </div>
-          </div>
-          {onToggleSound && (
-            <Switch
-              checked={soundEnabled}
-              onChange={onToggleSound}
-              disabled={disabled}
-            />
-          )}
-        </div>
-        {soundEnabled && onVolumeChange && (
-          <div className="flex items-center gap-3 pt-1">
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.05"
-              value={volume}
-              onChange={(e) => onVolumeChange(parseFloat(e.target.value))}
-              className="w-full h-1.5 bg-white/[0.1] rounded-lg appearance-none cursor-pointer accent-rose-500"
-              disabled={disabled}
-              title="Adjust chime volume"
-            />
-            <span className="text-xs font-mono font-semibold text-neutral-300 w-9 text-right">
-              {Math.round(volume * 100)}%
-            </span>
-          </div>
-        )}
-      </div>
-
-      {/* Section 6: Manual Interval Toggle */}
+      {/* Section 5: Manual Interval Toggle */}
       <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-between hover:border-white/[0.1] transition-all">
         <div>
           <span className="text-sm font-semibold text-white block">Manual Interval</span>
@@ -400,7 +376,24 @@ export function QuickSettingsContent({
           checked={requireManualStart || false}
           onChange={onRequireManualStartChange}
           disabled={disabled}
+          activeColor={accentColor}
         />
+      </div>
+
+      {/* Section 6: Continuous Dial Motion Toggle */}
+      <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-between hover:border-white/[0.1] transition-all">
+        <div>
+          <span className="text-sm font-semibold text-white block">Continuous Dial Motion</span>
+          <span className="text-xs text-neutral-400">Smooth millisecond ring vs second-by-second ticks</span>
+        </div>
+        {onToggleSmoothProgress && (
+          <Switch
+            checked={smoothProgress}
+            onChange={onToggleSmoothProgress}
+            disabled={disabled}
+            activeColor={accentColor}
+          />
+        )}
       </div>
     </div>
   );
@@ -426,7 +419,10 @@ interface FloatingSidebarProps {
   volume?: number;
   onToggleSound?: (enabled: boolean) => void;
   onVolumeChange?: (volume: number) => void;
+  smoothProgress?: boolean;
+  onToggleSmoothProgress?: (enabled: boolean) => void;
   disabled?: boolean;
+  isRunning?: boolean;
   // Presets props
   presets: TimerPreset[];
   selectedPreset: TimerPreset;
@@ -450,18 +446,30 @@ interface FloatingSidebarProps {
   onSaveSchedule: (schedule: Omit<Schedule, 'id'>) => void;
   onDeleteSchedule: (scheduleId: string) => void;
   onToggleSchedule: (scheduleId: string, enabled: boolean) => void;
-  // Appearance & Notifications
+  // Clock Style & Appearance
+  clockStyle?: ClockStyle;
+  onSelectClockStyle?: (style: ClockStyle) => void;
   isDark?: boolean;
   onToggleTheme?: () => void;
   colors: ThemeColors;
   onColorChange: (colors: ThemeColors) => void;
   notificationSettings: NotificationSettingsType;
   onUpdateNotificationSettings: (settings: NotificationSettingsType) => void;
+  // Video Backgrounds props
+  videoConfig?: VideoBackgroundConfig;
+  onToggleVideoEnabled?: (enabled?: boolean) => void;
+  onSelectVideo?: (video: VideoItem) => void;
+  onUpdateVideoConfig?: (partial: Partial<VideoBackgroundConfig>) => void;
+  onAddCustomVideo?: (video: Omit<VideoItem, 'id' | 'isCustom'>) => VideoItem;
+  onRemoveCustomVideo?: (id: string) => void;
+  onSetLocalFileVideo?: (file: File) => VideoItem;
 }
 
 export function FloatingSidebar({
   activeTab,
   onSelectTab,
+  clockStyle = 'minimal',
+  onSelectClockStyle,
   isDark,
   onToggleTheme,
   workMinutes,
@@ -480,7 +488,10 @@ export function FloatingSidebar({
   volume = 0.5,
   onToggleSound,
   onVolumeChange,
+  smoothProgress = true,
+  onToggleSmoothProgress,
   disabled = false,
+  isRunning = false,
   presets,
   selectedPreset,
   onSelectPreset,
@@ -505,6 +516,13 @@ export function FloatingSidebar({
   onColorChange,
   notificationSettings,
   onUpdateNotificationSettings,
+  videoConfig,
+  onToggleVideoEnabled,
+  onSelectVideo,
+  onUpdateVideoConfig,
+  onAddCustomVideo,
+  onRemoveCustomVideo,
+  onSetLocalFileVideo,
 }: FloatingSidebarProps) {
   const isExpanded = activeTab !== null;
 
@@ -513,8 +531,11 @@ export function FloatingSidebar({
     { id: 'chains', label: 'Preset Chains', icon: Link2 },
     { id: 'presets', label: 'Focus Presets', icon: Sparkles },
     { id: 'schedules', label: 'Schedules', icon: Clock },
+    { id: 'styles', label: 'Clock Styles', icon: Layout },
+    { id: 'videos', label: 'Video Backgrounds', icon: VideoIcon },
     { id: 'theme', label: 'Aesthetics', icon: Palette },
     { id: 'alerts', label: 'Notifications', icon: Bell },
+    { id: 'audio', label: 'Audio & Soundscapes', icon: Headphones },
   ];
 
   const handleTabClick = (tabId: FloatingTabType) => {
@@ -534,10 +555,10 @@ export function FloatingSidebar({
       {/* Floating Main Content Glass Panel (Left of Tab Strip) */}
       <aside
         aria-label="Floating Settings Panel"
-        className={`h-full flex flex-col glass-panel rounded-2xl sm:rounded-l-3xl sm:rounded-r-none border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.85)] backdrop-blur-3xl transition-all duration-300 ease-in-out overflow-hidden ${
+        className={`h-full flex flex-col glass-panel rounded-2xl sm:rounded-3xl border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.85)] backdrop-blur-3xl transition-all duration-300 ease-in-out overflow-hidden ${
           isExpanded
-            ? 'w-[340px] sm:w-[360px] opacity-100 p-5 border-r-0 border pointer-events-auto'
-            : 'w-0 opacity-0 p-0 border-0 pointer-events-none'
+            ? 'w-[340px] sm:w-[360px] opacity-100 p-5 border pointer-events-auto mr-3'
+            : 'w-0 opacity-0 p-0 border-0 pointer-events-none mr-0'
         }`}
       >
         <div className="w-[300px] sm:w-[320px] h-full flex flex-col">
@@ -557,10 +578,9 @@ export function FloatingSidebar({
                 onBreakSecondsChange={onBreakSecondsChange}
                 onIterationsChange={onIterationsChange}
                 onRequireManualStartChange={onRequireManualStartChange}
-                soundEnabled={soundEnabled}
-                volume={volume}
-                onToggleSound={onToggleSound}
-                onVolumeChange={onVolumeChange}
+                smoothProgress={smoothProgress}
+                onToggleSmoothProgress={onToggleSmoothProgress}
+                accentColor={colors.accentColor}
                 disabled={disabled}
                 onClose={handleClose}
               />
@@ -616,6 +636,30 @@ export function FloatingSidebar({
               />
             )}
 
+            {activeTab === 'styles' && (
+              <StyleSelector
+                currentStyle={clockStyle || 'minimal'}
+                onSelectStyle={onSelectClockStyle || (() => {})}
+                accentColor={colors.accentColor}
+                onClose={handleClose}
+              />
+            )}
+
+            {activeTab === 'videos' && videoConfig && (
+              <VideoSettings
+                config={videoConfig}
+                onToggleEnabled={onToggleVideoEnabled || (() => {})}
+                onSelectVideo={onSelectVideo || (() => {})}
+                onUpdateConfig={onUpdateVideoConfig || (() => {})}
+                onAddCustomVideo={onAddCustomVideo || ((v) => ({ ...v, id: 'temp', isCustom: true }))}
+                onRemoveCustomVideo={onRemoveCustomVideo || (() => {})}
+                onSetLocalFileVideo={onSetLocalFileVideo || ((f) => ({ id: 'temp', title: f.name, type: 'local', url: '', isCustom: true }))}
+                accentColor={colors.accentColor}
+                isRunning={isRunning}
+                onClose={handleClose}
+              />
+            )}
+
             {activeTab === 'theme' && (
               <ColorPicker 
                 colors={colors} 
@@ -630,6 +674,25 @@ export function FloatingSidebar({
               <NotificationSettings
                 settings={notificationSettings}
                 onUpdate={onUpdateNotificationSettings}
+                accentColor={colors.accentColor}
+                onClose={handleClose}
+              />
+            )}
+
+            {activeTab === 'audio' && (
+              <AudioSettings
+                soundEnabled={soundEnabled}
+                volume={volume}
+                onToggleSound={onToggleSound || (() => {})}
+                onVolumeChange={onVolumeChange || (() => {})}
+                workCompleteChime={notificationSettings.workComplete}
+                breakCompleteChime={notificationSettings.breakComplete}
+                sessionCompleteChime={notificationSettings.sessionComplete}
+                onToggleWorkCompleteChime={(val) => onUpdateNotificationSettings({ ...notificationSettings, workComplete: val })}
+                onToggleBreakCompleteChime={(val) => onUpdateNotificationSettings({ ...notificationSettings, breakComplete: val })}
+                onToggleSessionCompleteChime={(val) => onUpdateNotificationSettings({ ...notificationSettings, sessionComplete: val })}
+                accentColor={colors.accentColor}
+                isRunning={isRunning}
                 onClose={handleClose}
               />
             )}
@@ -637,23 +700,28 @@ export function FloatingSidebar({
         </div>
       </aside>
 
-      {/* Vertical Floating Tab Strip (Right Edge) */}
-      <div className={`flex flex-col items-center justify-between p-2 glass-panel transition-all duration-300 ${
-        isExpanded ? 'rounded-2xl sm:rounded-r-3xl sm:rounded-l-none border-l-0' : 'rounded-2xl sm:rounded-3xl'
-      } border border-white/10 shadow-2xl z-40 backdrop-blur-2xl h-full`}>
+      {/* Vertical Floating Tab Strip (Right Edge) - Transparent dock for true floating effect */}
+      <div className="flex flex-col items-center justify-center gap-2 z-40 my-auto py-1">
         <div className="flex flex-col items-center gap-2">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
+            const currentAccent = colors.accentColor || '#f43f5e';
             return (
               <button
                 key={tab.id}
                 onClick={() => handleTabClick(tab.id)}
-                className={`p-2.5 rounded-xl transition-all duration-200 relative group flex items-center justify-center ${
+                className={`p-2.5 rounded-2xl transition-all duration-200 relative group flex items-center justify-center ${
                   isActive
-                    ? 'bg-rose-500 text-white shadow-glow-rose scale-105'
-                    : 'text-neutral-400 hover:text-white hover:bg-white/[0.08]'
+                    ? 'scale-110 shadow-lg'
+                    : 'text-neutral-400 hover:text-white bg-white/[0.04] hover:bg-white/[0.12] border border-white/[0.08] hover:border-white/20 backdrop-blur-xl shadow-md'
                 }`}
+                style={isActive ? {
+                  backgroundColor: currentAccent,
+                  boxShadow: `0 0 18px ${currentAccent}90`,
+                  borderColor: `${currentAccent}cc`,
+                  color: '#ffffff'
+                } : {}}
                 title={tab.label}
               >
                 <Icon size={16} className={isActive ? 'rotate-0' : 'group-hover:scale-110 transition-transform'} />
@@ -670,12 +738,13 @@ export function FloatingSidebar({
         {/* Quick Collapse Tab toggle */}
         <button
           onClick={() => onSelectTab(isExpanded ? null : 'quick')}
-          className="mt-auto pt-2 border-t border-white/[0.08] p-2 rounded-xl text-neutral-400 hover:text-white transition-all w-full flex items-center justify-center hover:bg-white/[0.08]"
+          className="mt-1 p-2 rounded-xl text-neutral-400 hover:text-white transition-all flex items-center justify-center bg-white/[0.03] hover:bg-white/[0.1] border border-white/[0.06] backdrop-blur-md shadow-sm"
           title={isExpanded ? "Collapse Panel" : "Expand Panel"}
         >
           <ChevronLeft 
-            size={16} 
-            className={`transition-transform duration-300 ease-out ${isExpanded ? 'rotate-180 text-rose-400' : 'rotate-0 text-neutral-400'}`} 
+            size={15} 
+            className={`transition-transform duration-300 ease-out ${isExpanded ? 'rotate-180' : 'rotate-0 text-neutral-400'}`} 
+            style={isExpanded ? { color: colors.accentColor || '#f43f5e' } : {}}
           />
         </button>
       </div>

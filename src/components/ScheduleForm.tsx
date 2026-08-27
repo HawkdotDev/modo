@@ -59,25 +59,31 @@ export function ScheduleForm({
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <label className="text-sm text-gray-300">Schedule Name</label>
+        <label htmlFor="root-schedule-name" className="text-sm text-gray-300">Schedule Name</label>
         <input
+          id="root-schedule-name"
+          name="scheduleName"
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          aria-label="Schedule Name"
           className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg"
           required
         />
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="text-sm text-gray-300">Select Preset or Chain</label>
+        <label htmlFor="root-schedule-preset" className="text-sm text-gray-300">Select Preset or Chain</label>
         <div className="flex gap-4">
           <select
+            id="root-schedule-preset"
+            name="presetId"
             value={presetId}
             onChange={(e) => {
               setPresetId(e.target.value);
               setChainId('');
             }}
+            aria-label="Select Preset"
             className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg"
           >
             {presets.map(preset => (
@@ -87,11 +93,14 @@ export function ScheduleForm({
             ))}
           </select>
           <select
+            id="root-schedule-chain"
+            name="chainId"
             value={chainId}
             onChange={(e) => {
               setChainId(e.target.value);
               setPresetId('');
             }}
+            aria-label="Select Chain (Optional)"
             className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg"
           >
             <option value="">Select Chain (Optional)</option>
@@ -105,21 +114,27 @@ export function ScheduleForm({
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="text-sm text-gray-300">Start Time</label>
+        <label htmlFor="root-schedule-start-time" className="text-sm text-gray-300">Start Time</label>
         <input
+          id="root-schedule-start-time"
+          name="startTime"
           type="time"
           value={startTime}
           onChange={(e) => setStartTime(e.target.value)}
+          aria-label="Start Time"
           className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg"
           required
         />
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="text-sm text-gray-300">Recurrence</label>
+        <label htmlFor="root-schedule-recurrence" className="text-sm text-gray-300">Recurrence</label>
         <select
+          id="root-schedule-recurrence"
+          name="recurrence"
           value={recurrence}
           onChange={(e) => setRecurrence(e.target.value as RecurrenceType)}
+          aria-label="Recurrence"
           className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg"
         >
           <option value={RecurrenceType.NONE}>One-time</option>

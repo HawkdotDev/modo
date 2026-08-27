@@ -52,12 +52,15 @@ export function PresetChainForm({ presets, onSave, onCancel, initialValues }: Pr
       </div>
       
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-semibold text-neutral-300">Chain Name</label>
+        <label htmlFor="chain-form-name" className="text-xs font-semibold text-neutral-300 cursor-pointer">Chain Name</label>
         <input
+          id="chain-form-name"
+          name="chainName"
           type="text"
           value={name}
           placeholder="e.g. Morning Deep Flow"
           onChange={(e) => setName(e.target.value)}
+          aria-label="Preset Chain Name"
           className="px-3.5 py-2.5 bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-rose-500/50 focus:ring-1 focus:ring-rose-500/50"
           required
         />

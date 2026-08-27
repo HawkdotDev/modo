@@ -181,23 +181,29 @@ export function QuickSettings({
               {/* Centered Min/Sec Inputs */}
               <div className="flex items-center gap-1 bg-black/40 px-2 py-1 rounded-xl border border-white/[0.08]">
                 <input
+                  id="qs-focus-minutes"
+                  name="qsWorkMinutes"
                   type="number"
                   min="1"
                   max="120"
                   value={workMinutes}
                   onChange={(e) => onWorkMinutesChange(Math.max(1, Math.min(120, parseInt(e.target.value) || 1)))}
                   disabled={disabled}
+                  aria-label="Focus Minutes"
                   className="w-7 text-center bg-transparent text-white font-mono text-xs font-bold focus:outline-none"
                   title="Focus Minutes"
                 />
                 <span className="text-neutral-500 font-mono text-[10px]">:</span>
                 <input
+                  id="qs-focus-seconds"
+                  name="qsWorkSeconds"
                   type="number"
                   min="0"
                   max="59"
                   value={workSeconds}
                   onChange={(e) => onWorkSecondsChange(Math.max(0, Math.min(59, parseInt(e.target.value) || 0)))}
                   disabled={disabled}
+                  aria-label="Focus Seconds"
                   className="w-7 text-center bg-transparent text-white font-mono text-xs font-bold focus:outline-none"
                   title="Focus Seconds"
                 />
@@ -263,23 +269,29 @@ export function QuickSettings({
               {/* Centered Min/Sec Inputs */}
               <div className="flex items-center gap-1 bg-black/40 px-2 py-1 rounded-xl border border-white/[0.08]">
                 <input
+                  id="qs-break-minutes"
+                  name="qsBreakMinutes"
                   type="number"
                   min="1"
                   max="60"
                   value={breakMinutes}
                   onChange={(e) => onBreakMinutesChange(Math.max(1, Math.min(60, parseInt(e.target.value) || 1)))}
                   disabled={disabled}
+                  aria-label="Break Minutes"
                   className="w-7 text-center bg-transparent text-white font-mono text-xs font-bold focus:outline-none"
                   title="Break Minutes"
                 />
                 <span className="text-neutral-500 font-mono text-[10px]">:</span>
                 <input
+                  id="qs-break-seconds"
+                  name="qsBreakSeconds"
                   type="number"
                   min="0"
                   max="59"
                   value={breakSeconds}
                   onChange={(e) => onBreakSecondsChange(Math.max(0, Math.min(59, parseInt(e.target.value) || 0)))}
                   disabled={disabled}
+                  aria-label="Break Seconds"
                   className="w-7 text-center bg-transparent text-white font-mono text-xs font-bold focus:outline-none"
                   title="Break Seconds"
                 />
@@ -363,12 +375,15 @@ export function QuickSettings({
             {soundEnabled && onVolumeChange && (
               <div className="flex items-center gap-2 pt-0.5 px-0.5">
                 <input
+                  id="qs-chime-volume"
+                  name="qsVolume"
                   type="range"
                   min="0"
                   max="1"
                   step="0.05"
                   value={volume}
                   onChange={(e) => onVolumeChange(parseFloat(e.target.value))}
+                  aria-label="Chime Volume"
                   className="w-full h-1 bg-white/[0.1] rounded-lg appearance-none cursor-pointer accent-rose-500"
                   disabled={disabled}
                   title="Adjust chime volume"

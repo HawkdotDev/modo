@@ -1,10 +1,12 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { Navbar } from './components/Navbar';
 import { FloatingSidebar, FloatingTabType } from './components/FloatingSidebar';
 import { TimerDisplay } from './components/TimerDisplay';
+import { VideoBackground } from './components/VideoBackground';
 import { useTimer } from './hooks/useTimer';
 import { useScheduler } from './hooks/useScheduler';
 import { useNotificationSettings } from './hooks/useNotificationSettings';
+import { useVideoBackground } from './hooks/useVideoBackground';
 import { showNotification, playNotificationSound } from './utils/notifications';
 import { 
   TimerPreset, 
@@ -14,6 +16,7 @@ import {
   darkTheme,
   lightTheme,
   Schedule,
+  ClockStyle,
   defaultNotificationSettings
 } from './types/timer';
 import { Trophy, RotateCcw } from 'lucide-react';
@@ -39,10 +42,59 @@ export default function App() {
     requireManualStart: false
   });
 
+  const [clockStyle, setClockStyle] = useState<ClockStyle>(() => {
+    try {
+      return (localStorage.getItem('modo_clock_style') as ClockStyle) || 'minimal';
+    } catch {
+      return 'minimal';
+    }
+  });
+
+  const handleSelectClockStyle = (style: ClockStyle) => {
+    setClockStyle(style);
+    try {
+      localStorage.setItem('modo_clock_style', style);
+    } catch (e) {
+      console.warn('Failed to save clock style:', e);
+    }
+  };
+
+  const [smoothProgress, setSmoothProgress] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem('modo_smooth_dial');
+      return saved !== null ? saved === 'true' : true;
+    } catch {
+      return true;
+    }
+  });
+
+  const handleToggleSmoothProgress = (enabled: boolean) => {
+    setSmoothProgress(enabled);
+    try {
+      localStorage.setItem('modo_smooth_dial', String(enabled));
+    } catch (e) {
+      console.warn('Failed to save smooth progress preference:', e);
+    }
+  };
+
   const { settings: notificationSettings, updateSettings: updateNotificationSettings } = 
     useNotificationSettings(defaultNotificationSettings);
+
+  const {
+    config: videoConfig,
+    updateConfig: updateVideoConfig,
+    toggleEnabled: toggleVideoEnabled,
+    selectVideo,
+    addCustomVideo,
+    removeCustomVideo,
+    setLocalFileVideo
+  } = useVideoBackground();
   
-  const activeSettings = isCustom ? customSettings : selectedPreset;
+  const baseSettings = isCustom ? customSettings : selectedPreset;
+  const activeSettings = useMemo(() => ({
+    ...baseSettings,
+    smoothProgress
+  }), [baseSettings, smoothProgress]);
 
   const handleWorkComplete = useCallback(() => {
     if (notificationSettings.enabled) {
@@ -205,25 +257,28 @@ export default function App() {
       className="min-h-screen h-screen transition-colors duration-500 pb-0 relative overflow-hidden bg-black text-white selection:bg-rose-500/30 flex flex-col justify-between"
       style={{ backgroundColor: colors.background, color: colors.text }}
     >
+      {/* Video Background Layer */}
+      <VideoBackground config={videoConfig} isRunning={isRunning} />
+
       {/* Ambient background glow aura (animated multi-layer & shifts in sync with timer) */}
       <div className={`ambient-glow-wrapper ${activeFloatingTab !== null ? 'shifted' : ''}`}>
         <div 
           className="ambient-glow-main" 
           style={{ 
             backgroundColor: activeColor,
-            opacity: isRunning ? 0.28 : 0.14
+            opacity: videoConfig.enabled ? (isRunning ? 0.16 : 0.08) : (isRunning ? 0.28 : 0.14)
           }} 
         />
         <div 
           className="ambient-glow-secondary" 
           style={{ 
             backgroundColor: isBreak ? colors.workColor : colors.breakColor,
-            opacity: isRunning ? 0.20 : 0.08
+            opacity: videoConfig.enabled ? (isRunning ? 0.12 : 0.05) : (isRunning ? 0.20 : 0.08)
           }} 
         />
       </div>
 
-      <Navbar />
+      <Navbar accentColor={colors.accentColor} />
 
       <main className={`flex-1 flex items-center justify-center relative z-10 px-4 transition-all duration-300 ease-in-out ${
         activeFloatingTab !== null ? 'lg:pr-[390px]' : 'pr-0'
@@ -259,12 +314,15 @@ export default function App() {
                 totalIterations={activeSettings.iterations}
                 workColor={colors.workColor}
                 breakColor={colors.breakColor}
+                accentColor={colors.accentColor}
                 presetName={selectedPreset.name}
                 onToggle={toggleTimer}
                 onReset={reset}
                 onSaveAsPreset={isCustom ? handleSaveCustomAsPreset : undefined}
                 isCustom={isCustom}
                 waitingForManualStart={waitingForManualStart}
+                smoothProgress={smoothProgress}
+                clockStyle={clockStyle}
               />
             )}
           </div>
@@ -275,6 +333,8 @@ export default function App() {
       <FloatingSidebar
         activeTab={activeFloatingTab}
         onSelectTab={setActiveFloatingTab}
+        clockStyle={clockStyle}
+        onSelectClockStyle={handleSelectClockStyle}
         isDark={isDark}
         onToggleTheme={handleToggleTheme}
         workMinutes={activeSettings.workMinutes}
@@ -293,7 +353,10 @@ export default function App() {
         volume={notificationSettings.volume}
         onToggleSound={(enabled) => updateNotificationSettings({ ...notificationSettings, sound: enabled })}
         onVolumeChange={(vol) => updateNotificationSettings({ ...notificationSettings, volume: vol })}
+        smoothProgress={smoothProgress}
+        onToggleSmoothProgress={handleToggleSmoothProgress}
         disabled={isRunning}
+        isRunning={isRunning}
         presets={presets}
         selectedPreset={selectedPreset}
         onSelectPreset={handlePresetSelect}
@@ -330,6 +393,13 @@ export default function App() {
         onColorChange={setColors}
         notificationSettings={notificationSettings}
         onUpdateNotificationSettings={updateNotificationSettings}
+        videoConfig={videoConfig}
+        onToggleVideoEnabled={toggleVideoEnabled}
+        onSelectVideo={selectVideo}
+        onUpdateVideoConfig={updateVideoConfig}
+        onAddCustomVideo={addCustomVideo}
+        onRemoveCustomVideo={removeCustomVideo}
+        onSetLocalFileVideo={setLocalFileVideo}
       />
     </div>
   );

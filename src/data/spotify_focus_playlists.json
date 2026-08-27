@@ -1,0 +1,68 @@
+{
+  "spotify_focus_playlists": [
+    {
+      "id": "lofi",
+      "name": "Lofi Beats",
+      "genre": "Lo-Fi / Study",
+      "description": "Chill beats to focus & study",
+      "spotify_uri": "spotify:playlist:37i9dQZF1DX8Uebhn9wzrS",
+      "url": "https://open.spotify.com/playlist/37i9dQZF1DX8Uebhn9wzrS"
+    },
+    {
+      "id": "deep",
+      "name": "Deep Focus",
+      "genre": "Ambient / Drone",
+      "description": "Ambient atmospheric synths",
+      "spotify_uri": "spotify:playlist:37i9dQZF1DWZeKCadgRdKQ",
+      "url": "https://open.spotify.com/playlist/37i9dQZF1DWZeKCadgRdKQ"
+    },
+    {
+      "id": "piano",
+      "name": "Peaceful Piano",
+      "genre": "Classical / Piano",
+      "description": "Relaxing modern classical",
+      "spotify_uri": "spotify:playlist:37i9dQZF1DX4sWSpwq3LiO",
+      "url": "https://open.spotify.com/playlist/37i9dQZF1DX4sWSpwq3LiO"
+    },
+    {
+      "id": "citypop",
+      "name": "City Pop",
+      "genre": "Japanese 80s / Retro Funk",
+      "description": "80s Japanese retro groove",
+      "spotify_uri": "spotify:playlist:37i9dQZF1DXarRysDw0Lfd",
+      "url": "https://open.spotify.com/playlist/37i9dQZF1DXarRysDw0Lfd"
+    },
+    {
+      "id": "blues",
+      "name": "Blues Focus",
+      "genre": "Blues / Mellow Guitar",
+      "description": "Soulful mellow blues guitar",
+      "spotify_uri": "spotify:playlist:37i9dQZF1DX1lVhptIYRda",
+      "url": "https://open.spotify.com/playlist/37i9dQZF1DX1lVhptIYRda"
+    },
+    {
+      "id": "instrumental",
+      "name": "Instrumental",
+      "genre": "Acoustic / Instrumental",
+      "description": "Calm melodic study acoustic",
+      "spotify_uri": "spotify:playlist:37i9dQZF1DX91Zrllv0q7D",
+      "url": "https://open.spotify.com/playlist/37i9dQZF1DX91Zrllv0q7D"
+    },
+    {
+      "id": "synth",
+      "name": "Synthwave Chill",
+      "genre": "Synthwave / Retrowave",
+      "description": "Retro electronic drive",
+      "spotify_uri": "spotify:playlist:37i9dQZF1DXdLEN7aqioXM",
+      "url": "https://open.spotify.com/playlist/37i9dQZF1DXdLEN7aqioXM"
+    },
+    {
+      "id": "jazz",
+      "name": "Coffeehouse Jazz",
+      "genre": "Jazz / Cafe",
+      "description": "Warm acoustic cafe vibes",
+      "spotify_uri": "spotify:playlist:37i9dQZF1DXbITWG1ZJKYt",
+      "url": "https://open.spotify.com/playlist/37i9dQZF1DXbITWG1ZJKYt"
+    }
+  ]
+}

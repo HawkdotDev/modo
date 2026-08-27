@@ -49,10 +49,22 @@ export function PomodoroIcon({ className = "w-7 h-7" }: { className?: string }) 
   );
 }
 
-export function Navbar() {
+interface NavbarProps {
+  accentColor?: string;
+}
+
+export function Navbar({ accentColor = '#f43f5e' }: NavbarProps) {
   return (
     <header className="fixed top-5 left-5 sm:top-6 sm:left-6 z-40 flex items-center gap-2.5 select-none pointer-events-auto">
-      <PomodoroIcon className="w-7 h-7 text-rose-500 drop-shadow-[0_0_12px_rgba(244,63,94,0.45)]" />
+      <div 
+        style={{ 
+          color: accentColor, 
+          filter: `drop-shadow(0 0 12px ${accentColor}80)` 
+        }}
+        className="transition-all duration-500"
+      >
+        <PomodoroIcon className="w-7 h-7" />
+      </div>
       <span className="font-bold text-xl tracking-tight bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent">
         modo
       </span>
