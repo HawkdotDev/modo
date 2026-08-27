@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { PresetChain, ChainedPreset } from '../types/timer';
+import { PresetChain } from '../types/timer';
 
 export function usePresetChain(chain: PresetChain) {
   const [currentPresetIndex, setCurrentPresetIndex] = useState(0);
@@ -37,7 +37,7 @@ export function usePresetChain(chain: PresetChain) {
   }, []);
 
   useEffect(() => {
-    let interval: number;
+    let interval: ReturnType<typeof setInterval>;
 
     if (isRunning && delayTimeLeft > 0) {
       interval = setInterval(() => {

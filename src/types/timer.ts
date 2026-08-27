@@ -119,15 +119,15 @@ export const defaultNotificationSettings: NotificationSettings = {
 };
 
 export const lightTheme: ThemeColors = {
-  background: '#f3f4f6',
-  workColor: '#ef4444',
+  background: '#f8fafc',
+  workColor: '#f43f5e',
   breakColor: '#10b981',
-  text: '#111827'
+  text: '#0f172a'
 };
 
 export const darkTheme: ThemeColors = {
-  background: '#111827',
-  workColor: '#ef4444',
+  background: '#000000',
+  workColor: '#f43f5e',
   breakColor: '#10b981',
   text: '#ffffff'
 };

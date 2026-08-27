@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Plus, X } from 'lucide-react';
+import { useState, FormEvent } from 'react';
+import { Plus, Trash2, Layers } from 'lucide-react';
 import { TimerPreset, ChainedPreset, PresetChain } from '../types/timer';
 import { TimeInput } from './TimeInput';
 
@@ -7,11 +7,16 @@ interface PresetChainFormProps {
   presets: TimerPreset[];
   onSave: (chain: Omit<PresetChain, 'id'>) => void;
   onCancel: () => void;
+  initialValues?: PresetChain | null;
 }
 
-export function PresetChainForm({ presets, onSave, onCancel }: PresetChainFormProps) {
-  const [name, setName] = useState('');
-  const [chainedPresets, setChainedPresets] = useState<ChainedPreset[]>([]);
+export function PresetChainForm({ presets, onSave, onCancel, initialValues }: PresetChainFormProps) {
+  const [name, setName] = useState(initialValues?.name ?? '');
+  const [chainedPresets, setChainedPresets] = useState<ChainedPreset[]>(
+    initialValues?.presets ?? [
+      { preset: presets[0] || { id: 'classic', name: 'Classic Pomodoro', workMinutes: 25, breakMinutes: 5, workSeconds: 0, breakSeconds: 0, iterations: 4 }, delayMinutes: 0, delaySeconds: 0 }
+    ]
+  );
 
   const addPreset = () => {
     setChainedPresets(prev => [...prev, {
@@ -31,60 +36,73 @@ export function PresetChainForm({ presets, onSave, onCancel }: PresetChainFormPr
     ));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    onSave({ name, presets: chainedPresets });
+    onSave({ name: name.trim() || 'Focus Chain', presets: chainedPresets });
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full max-w-md">
-      <h2 className="text-xl font-semibold">Create Preset Chain</h2>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full">
+      <div>
+        <h3 className="text-base font-semibold text-white flex items-center gap-2">
+          <Layers size={16} className="text-rose-400" />
+          {initialValues ? 'Edit Preset Chain' : 'Create Preset Chain'}
+        </h3>
+        <p className="text-xs text-neutral-400">Chain presets together with customizable intermissions</p>
+      </div>
       
-      <div className="flex flex-col gap-2">
-        <label className="text-sm text-gray-300">Chain Name</label>
+      <div className="flex flex-col gap-1.5">
+        <label className="text-xs font-semibold text-neutral-300">Chain Name</label>
         <input
           type="text"
           value={name}
+          placeholder="e.g. Morning Deep Flow"
           onChange={(e) => setName(e.target.value)}
-          className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+          className="px-3.5 py-2.5 bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-rose-500/50 focus:ring-1 focus:ring-rose-500/50"
           required
         />
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
+        <div className="flex justify-between items-center">
+          <label className="text-xs font-semibold text-neutral-300 uppercase tracking-wider">Stages ({chainedPresets.length})</label>
+        </div>
+
         {chainedPresets.map((chainedPreset, index) => (
-          <div key={index} className="p-4 bg-gray-800/50 rounded-lg">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-medium">Preset {index + 1}</h3>
-              <button
-                type="button"
-                onClick={() => removePreset(index)}
-                className="p-1 hover:bg-gray-700 rounded-full transition-colors"
-              >
-                <X size={16} />
-              </button>
+          <div key={index} className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-xs font-bold uppercase tracking-wider text-rose-400">Stage {index + 1}</span>
+              {chainedPresets.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => removePreset(index)}
+                  className="p-1 rounded-lg text-neutral-500 hover:text-rose-400 hover:bg-rose-500/10 transition-all"
+                >
+                  <Trash2 size={14} />
+                </button>
+              )}
             </div>
             
-            <div className="space-y-4">
-              <div className="flex flex-col gap-2">
-                <label className="text-sm text-gray-300">Select Preset</label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="flex flex-col gap-1">
+                <label className="text-[11px] text-neutral-400">Select Preset</label>
                 <select
                   value={chainedPreset.preset.id}
                   onChange={(e) => updateChainedPreset(index, {
                     preset: presets.find(p => p.id === e.target.value)!
                   })}
-                  className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  className="px-3 py-2 bg-black/50 border border-white/[0.08] rounded-xl text-xs text-white focus:outline-none focus:border-rose-500/50"
                 >
                   {presets.map(preset => (
-                    <option key={preset.id} value={preset.id}>
-                      {preset.name}
+                    <option key={preset.id} value={preset.id} className="bg-neutral-900 text-white">
+                      {preset.name} ({preset.workMinutes}m/{preset.breakMinutes}m)
                     </option>
                   ))}
                 </select>
               </div>
 
-              <div className="flex flex-col gap-2">
-                <label className="text-sm text-gray-300">Delay Before Start</label>
+              <div className="flex flex-col gap-1">
+                <label className="text-[11px] text-neutral-400">Delay Before Start</label>
                 <TimeInput
                   label=""
                   minutes={chainedPreset.delayMinutes}
@@ -101,23 +119,23 @@ export function PresetChainForm({ presets, onSave, onCancel }: PresetChainFormPr
       <button
         type="button"
         onClick={addPreset}
-        className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
+        className="flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-dashed border-white/[0.12] text-xs font-semibold text-neutral-300 transition-all"
       >
-        <Plus size={16} />
-        Add Preset
+        <Plus size={14} />
+        Add Stage
       </button>
 
-      <div className="flex gap-4 mt-4">
+      <div className="flex gap-3 mt-2">
         <button
           type="submit"
-          className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+          className="flex-1 py-2.5 px-4 bg-white text-black font-semibold text-xs uppercase tracking-wider rounded-xl hover:bg-neutral-200 active:scale-95 transition-all shadow-md"
         >
-          Save Chain
+          {initialValues ? 'Update Chain' : 'Save Chain'}
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
+          className="py-2.5 px-4 bg-white/[0.06] hover:bg-white/[0.1] text-neutral-300 text-xs font-semibold rounded-xl border border-white/[0.08] transition-all"
         >
           Cancel
         </button>

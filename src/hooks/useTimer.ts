@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { TimerPreset } from '../types/timer';
 
-interface TimerSettings extends TimerPreset {
+interface TimerSettings extends Partial<TimerPreset> {
   workMinutes: number;
   breakMinutes: number;
   workSeconds: number;
@@ -10,7 +10,13 @@ interface TimerSettings extends TimerPreset {
   requireManualStart?: boolean;
 }
 
-export function useTimer(initialSettings: TimerSettings) {
+interface TimerCallbacks {
+  onWorkComplete?: () => void;
+  onBreakComplete?: () => void;
+  onSessionComplete?: () => void;
+}
+
+export function useTimer(initialSettings: TimerSettings, callbacks?: TimerCallbacks) {
   const [settings, setSettings] = useState(initialSettings);
   const [isBreak, setIsBreak] = useState(false);
   const [timeLeft, setTimeLeft] = useState(
@@ -22,9 +28,16 @@ export function useTimer(initialSettings: TimerSettings) {
   const [isComplete, setIsComplete] = useState(false);
   const [waitingForManualStart, setWaitingForManualStart] = useState(false);
 
+  const callbacksRef = useRef(callbacks);
+  useEffect(() => {
+    callbacksRef.current = callbacks;
+  }, [callbacks]);
+
   const totalSeconds = isBreak 
     ? settings.breakMinutes * 60 + settings.breakSeconds
     : settings.workMinutes * 60 + settings.workSeconds;
+
+  const prevSettingsRef = useRef(initialSettings);
 
   const reset = useCallback(() => {
     setIsBreak(false);
@@ -36,13 +49,17 @@ export function useTimer(initialSettings: TimerSettings) {
     setWaitingForManualStart(false);
   }, [settings.workMinutes, settings.workSeconds]);
 
-  const updateSettings = (newSettings: TimerSettings) => {
+  const updateSettings = useCallback((newSettings: TimerSettings) => {
     setSettings(newSettings);
+    prevSettingsRef.current = newSettings;
     if (!isRunning) {
-      setTimeLeft(newSettings.workMinutes * 60 + newSettings.workSeconds);
+      const newTotal = isBreak
+        ? newSettings.breakMinutes * 60 + newSettings.breakSeconds
+        : newSettings.workMinutes * 60 + newSettings.workSeconds;
+      setTimeLeft(newTotal);
       setProgress(1);
     }
-  };
+  }, [isRunning, isBreak]);
 
   const toggleTimer = () => {
     if (waitingForManualStart) {
@@ -51,26 +68,45 @@ export function useTimer(initialSettings: TimerSettings) {
     setIsRunning((prev) => !prev);
   };
 
+  // Only update timeLeft if initialSettings actually changed, NOT on isRunning toggle (pause/play)
   useEffect(() => {
-    if (!isRunning) {
-      updateSettings(initialSettings);
+    const prev = prevSettingsRef.current;
+    const hasChanged = 
+      prev.workMinutes !== initialSettings.workMinutes ||
+      prev.workSeconds !== initialSettings.workSeconds ||
+      prev.breakMinutes !== initialSettings.breakMinutes ||
+      prev.breakSeconds !== initialSettings.breakSeconds ||
+      prev.iterations !== initialSettings.iterations ||
+      prev.requireManualStart !== initialSettings.requireManualStart;
+
+    if (hasChanged) {
+      prevSettingsRef.current = initialSettings;
+      setSettings(initialSettings);
+      if (!isRunning) {
+        const newTotal = isBreak
+          ? initialSettings.breakMinutes * 60 + initialSettings.breakSeconds
+          : initialSettings.workMinutes * 60 + initialSettings.workSeconds;
+        setTimeLeft(newTotal);
+        setProgress(1);
+      }
     }
-  }, [initialSettings, isRunning]);
+  }, [initialSettings, isRunning, isBreak]);
 
   useEffect(() => {
-    let interval: number;
+    let interval: ReturnType<typeof setInterval>;
 
     if (isRunning && timeLeft > 0 && !waitingForManualStart) {
       interval = setInterval(() => {
         setTimeLeft((prev) => {
           const newTime = prev - 1;
-          setProgress(newTime / totalSeconds);
+          setProgress(totalSeconds > 0 ? newTime / totalSeconds : 0);
           return newTime;
         });
       }, 1000);
-    } else if (timeLeft === 0) {
+    } else if (timeLeft === 0 && isRunning) {
       if (isBreak) {
         // After break, start next work session
+        callbacksRef.current?.onBreakComplete?.();
         setIsBreak(false);
         setTimeLeft(settings.workMinutes * 60 + settings.workSeconds);
         setProgress(1);
@@ -83,6 +119,7 @@ export function useTimer(initialSettings: TimerSettings) {
         // After work session
         if (currentIteration < settings.iterations) {
           // If not the last iteration, start break
+          callbacksRef.current?.onWorkComplete?.();
           setIsBreak(true);
           setTimeLeft(settings.breakMinutes * 60 + settings.breakSeconds);
           setProgress(1);
@@ -92,6 +129,7 @@ export function useTimer(initialSettings: TimerSettings) {
           }
         } else {
           // If last iteration, complete the session
+          callbacksRef.current?.onSessionComplete?.();
           setIsComplete(true);
           setIsRunning(false);
         }

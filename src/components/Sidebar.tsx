@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { X, Clock, Bell } from 'lucide-react';
+import { useState } from 'react';
+import { X, Clock, Bell, Palette, Sparkles } from 'lucide-react';
 import { PresetSelector } from './PresetSelector';
 import { PresetForm } from './PresetForm';
 import { ColorPicker } from './ColorPicker';
 import { NotificationSettings } from './NotificationSettings';
 import { ScheduleManager } from './scheduling/ScheduleManager';
-import { TimerPreset, ThemeColors, Schedule, NotificationSettings as NotificationSettingsType } from '../types/timer';
+import { TimerPreset, ThemeColors, Schedule, PresetChain, NotificationSettings as NotificationSettingsType } from '../types/timer';
 
 interface SidebarProps {
   show: boolean;
@@ -52,66 +52,87 @@ export function Sidebar({
 
   return (
     <>
+      {/* Backdrop */}
       <div
-        className={`fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity z-40 ${
+        className={`fixed inset-0 bg-black/70 backdrop-blur-md transition-opacity duration-300 z-40 ${
           show ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
         onClick={onClose}
       />
+
+      {/* Drawer */}
       <div
-        className={`fixed top-0 right-0 h-full w-[32rem] bg-gray-900 border-l border-gray-800 transform transition-transform duration-300 ease-in-out z-50 flex flex-col ${
+        className={`fixed top-0 right-0 h-full w-full sm:w-[32rem] bg-black/92 backdrop-blur-3xl border-l border-white/10 shadow-2xl transform transition-transform duration-300 ease-out z-50 flex flex-col ${
           show ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        <div className="flex-none p-6 border-b border-gray-800">
+        {/* Header */}
+        <div className="flex-none p-6 border-b border-white/[0.08]">
           <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold">Settings</h2>
+            <div>
+              <h2 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                Preferences
+              </h2>
+              <p className="text-xs text-neutral-400 mt-0.5">Customize presets, schedules and notifications</p>
+            </div>
             <button
               onClick={onClose}
-              className="p-2 rounded-lg hover:bg-gray-800 transition-colors"
+              className="p-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] text-neutral-400 hover:text-white border border-white/[0.06] transition-all"
             >
-              <X size={20} />
+              <X size={18} />
             </button>
           </div>
           
-          <div className="flex gap-2 mt-6 overflow-x-auto pb-2">
+          {/* Tab Navigation */}
+          <div className="flex gap-1.5 mt-5 p-1 bg-white/[0.04] border border-white/[0.06] rounded-2xl overflow-x-auto">
             <button
               onClick={() => setActiveTab('presets')}
-              className={`px-4 py-2 rounded-lg transition-colors whitespace-nowrap ${
-                activeTab === 'presets' ? 'bg-gray-800' : 'hover:bg-gray-800/50'
+              className={`flex-1 min-w-[70px] py-2 px-3 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1.5 whitespace-nowrap ${
+                activeTab === 'presets' 
+                  ? 'bg-white text-black shadow-md' 
+                  : 'text-neutral-400 hover:text-white hover:bg-white/[0.05]'
               }`}
             >
+              <Sparkles size={13} />
               Presets
             </button>
             <button
               onClick={() => setActiveTab('schedules')}
-              className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-2 whitespace-nowrap ${
-                activeTab === 'schedules' ? 'bg-gray-800' : 'hover:bg-gray-800/50'
+              className={`flex-1 min-w-[70px] py-2 px-3 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1.5 whitespace-nowrap ${
+                activeTab === 'schedules' 
+                  ? 'bg-white text-black shadow-md' 
+                  : 'text-neutral-400 hover:text-white hover:bg-white/[0.05]'
               }`}
             >
-              <Clock size={16} />
-              Schedules
+              <Clock size={13} />
+              Schedule
             </button>
             <button
               onClick={() => setActiveTab('notifications')}
-              className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-2 whitespace-nowrap ${
-                activeTab === 'notifications' ? 'bg-gray-800' : 'hover:bg-gray-800/50'
+              className={`flex-1 min-w-[70px] py-2 px-3 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1.5 whitespace-nowrap ${
+                activeTab === 'notifications' 
+                  ? 'bg-white text-black shadow-md' 
+                  : 'text-neutral-400 hover:text-white hover:bg-white/[0.05]'
               }`}
             >
-              <Bell size={16} />
-              Notifications
+              <Bell size={13} />
+              Alerts
             </button>
             <button
               onClick={() => setActiveTab('appearance')}
-              className={`px-4 py-2 rounded-lg transition-colors whitespace-nowrap ${
-                activeTab === 'appearance' ? 'bg-gray-800' : 'hover:bg-gray-800/50'
+              className={`flex-1 min-w-[70px] py-2 px-3 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1.5 whitespace-nowrap ${
+                activeTab === 'appearance' 
+                  ? 'bg-white text-black shadow-md' 
+                  : 'text-neutral-400 hover:text-white hover:bg-white/[0.05]'
               }`}
             >
-              Appearance
+              <Palette size={13} />
+              Theme
             </button>
           </div>
         </div>
 
+        {/* Body Content */}
         <div className="flex-1 overflow-y-auto p-6">
           <div className="max-w-lg mx-auto">
             {showPresetForm ? (

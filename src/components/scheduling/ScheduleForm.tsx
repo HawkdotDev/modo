@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState, FormEvent } from 'react';
 import { TimerPreset, PresetChain, Schedule, RecurrenceType, scheduleSchema } from '../../types/timer';
 import { Switch } from '../Switch';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Calendar } from 'lucide-react';
 
 interface ScheduleFormProps {
   presets: TimerPreset[];
@@ -23,7 +23,7 @@ export function ScheduleForm({
     initialValues?.chainId ? 'chain' : 'preset'
   );
   const [selectedId, setSelectedId] = useState(
-    initialValues?.chainId || initialValues?.presetId || presets[0].id
+    initialValues?.chainId || initialValues?.presetId || presets[0]?.id || ''
   );
   const [startTime, setStartTime] = useState(initialValues?.startTime ?? '09:00');
   const [recurrence, setRecurrence] = useState<RecurrenceType>(
@@ -32,11 +32,11 @@ export function ScheduleForm({
   const [days, setDays] = useState<number[]>(initialValues?.days ?? []);
   const [isEnabled, setIsEnabled] = useState(initialValues?.isEnabled ?? true);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     
     const schedule = {
-      name,
+      name: name.trim() || 'Focus Alarm',
       presetId: selectedType === 'preset' ? selectedId : '',
       chainId: selectedType === 'chain' ? selectedId : undefined,
       startTime,
@@ -62,171 +62,163 @@ export function ScheduleForm({
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
+    <div className="space-y-5">
+      <div className="flex items-center gap-3">
         <button
           onClick={onCancel}
-          className="p-2 rounded-lg hover:bg-gray-800 transition-colors"
+          className="p-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] text-neutral-400 hover:text-white transition-all"
         >
-          <ArrowLeft size={20} />
+          <ArrowLeft size={16} />
         </button>
-        <h2 className="text-xl font-semibold">
-          {initialValues ? 'Edit Schedule' : 'Create Schedule'}
-        </h2>
+        <div>
+          <h3 className="text-base font-semibold text-white flex items-center gap-2">
+            <Calendar size={16} className="text-rose-400" />
+            {initialValues ? 'Edit Schedule' : 'Create Schedule'}
+          </h3>
+          <p className="text-xs text-neutral-400">Trigger timers automatically at scheduled times</p>
+        </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-4">
-          <div className="flex flex-col gap-2">
-            <label className="text-sm text-gray-300">Schedule Name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg"
-              required
-            />
-          </div>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-semibold text-neutral-300">Schedule Label</label>
+          <input
+            type="text"
+            value={name}
+            placeholder="e.g. Daily Standup Focus"
+            onChange={(e) => setName(e.target.value)}
+            className="px-3.5 py-2.5 bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-rose-500/50 focus:ring-1 focus:ring-rose-500/50"
+            required
+          />
+        </div>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-sm text-gray-300">Schedule Type</label>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => setSelectedType('preset')}
-                className={`flex-1 px-4 py-2 rounded-lg transition-colors ${
-                  selectedType === 'preset'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-700 text-gray-300'
-                }`}
-              >
-                Preset
-              </button>
-              <button
-                type="button"
-                onClick={() => setSelectedType('chain')}
-                className={`flex-1 px-4 py-2 rounded-lg transition-colors ${
-                  selectedType === 'chain'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-700 text-gray-300'
-                }`}
-              >
-                Chain
-              </button>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label className="text-sm text-gray-300">
-              Select {selectedType === 'preset' ? 'Preset' : 'Chain'}
-            </label>
-            <select
-              value={selectedId}
-              onChange={(e) => setSelectedId(e.target.value)}
-              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg"
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-semibold text-neutral-300">Target Type</label>
+          <div className="flex gap-2 p-1 bg-white/[0.03] border border-white/[0.06] rounded-xl">
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedType('preset');
+                if (presets[0]) setSelectedId(presets[0].id);
+              }}
+              className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                selectedType === 'preset'
+                  ? 'bg-white text-black shadow-sm'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
             >
-              {selectedType === 'preset' ? (
-                presets.map(preset => (
-                  <option key={preset.id} value={preset.id}>
-                    {preset.name}
-                  </option>
-                ))
-              ) : (
-                chains.map(chain => (
-                  <option key={chain.id} value={chain.id}>
-                    {chain.name}
-                  </option>
-                ))
-              )}
-            </select>
+              Preset
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedType('chain');
+                if (chains[0]) setSelectedId(chains[0].id);
+              }}
+              className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                selectedType === 'chain'
+                  ? 'bg-white text-black shadow-sm'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              Chain
+            </button>
           </div>
+        </div>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-sm text-gray-300">Start Time</label>
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-semibold text-neutral-300">
+            Select {selectedType === 'preset' ? 'Preset' : 'Chain'}
+          </label>
+          <select
+            value={selectedId}
+            onChange={(e) => setSelectedId(e.target.value)}
+            className="w-full px-3 py-2 bg-black/50 border border-white/[0.08] rounded-xl text-xs text-white focus:outline-none focus:border-rose-500/50"
+          >
+            {selectedType === 'preset' ? (
+              presets.map(preset => (
+                <option key={preset.id} value={preset.id} className="bg-neutral-900 text-white">
+                  {preset.name} ({preset.workMinutes}m/{preset.breakMinutes}m)
+                </option>
+              ))
+            ) : (
+              chains.map(chain => (
+                <option key={chain.id} value={chain.id} className="bg-neutral-900 text-white">
+                  {chain.name} ({chain.presets.length} stages)
+                </option>
+              ))
+            )}
+          </select>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-semibold text-neutral-300">Trigger Time</label>
             <input
               type="time"
               value={startTime}
               onChange={(e) => setStartTime(e.target.value)}
-              className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg"
+              className="px-3.5 py-2 bg-white/[0.04] border border-white/[0.08] rounded-xl text-xs font-mono text-white focus:outline-none focus:border-rose-500/50"
               required
             />
           </div>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-sm text-gray-300">Recurrence</label>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-semibold text-neutral-300">Frequency</label>
             <select
               value={recurrence}
               onChange={(e) => setRecurrence(e.target.value as RecurrenceType)}
-              className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg"
+              className="px-3 py-2 bg-black/50 border border-white/[0.08] rounded-xl text-xs text-white focus:outline-none focus:border-rose-500/50"
             >
-              <option value={RecurrenceType.NONE}>One-time</option>
-              <option value={RecurrenceType.DAILY}>Daily</option>
-              <option value={RecurrenceType.WEEKLY}>Weekly</option>
-              <option value={RecurrenceType.MONTHLY}>Monthly</option>
+              <option value={RecurrenceType.NONE} className="bg-neutral-900">One-time</option>
+              <option value={RecurrenceType.DAILY} className="bg-neutral-900">Every day</option>
+              <option value={RecurrenceType.WEEKLY} className="bg-neutral-900">Weekly</option>
+              <option value={RecurrenceType.MONTHLY} className="bg-neutral-900">Monthly</option>
             </select>
-          </div>
-
-          {recurrence === RecurrenceType.WEEKLY && (
-            <div className="flex flex-col gap-2">
-              <label className="text-sm text-gray-300">Select Days</label>
-              <div className="flex gap-2 flex-wrap">
-                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, index) => (
-                  <button
-                    key={day}
-                    type="button"
-                    onClick={() => handleDayToggle(index)}
-                    className={`px-3 py-1 rounded-full ${
-                      days.includes(index)
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-700 text-gray-300'
-                    }`}
-                  >
-                    {day}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {recurrence === RecurrenceType.MONTHLY && (
-            <div className="flex flex-col gap-2">
-              <label className="text-sm text-gray-300">Select Dates</label>
-              <div className="flex gap-2 flex-wrap">
-                {Array.from({ length: 31 }, (_, i) => i + 1).map(date => (
-                  <button
-                    key={date}
-                    type="button"
-                    onClick={() => handleDayToggle(date)}
-                    className={`w-8 h-8 rounded-full ${
-                      days.includes(date)
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-700 text-gray-300'
-                    }`}
-                  >
-                    {date}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div className="flex items-center justify-between py-2">
-            <label className="text-sm text-gray-300">Enable Schedule</label>
-            <Switch checked={isEnabled} onChange={setIsEnabled} />
           </div>
         </div>
 
-        <div className="flex gap-4">
+        {recurrence === RecurrenceType.WEEKLY && (
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-semibold text-neutral-300">Active Days</label>
+            <div className="flex gap-1.5 flex-wrap">
+              {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, index) => (
+                <button
+                  key={day}
+                  type="button"
+                  onClick={() => handleDayToggle(index)}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
+                    days.includes(index)
+                      ? 'bg-rose-500 text-white font-semibold shadow-glow-rose'
+                      : 'bg-white/[0.04] text-neutral-400 hover:bg-white/[0.08]'
+                  }`}
+                >
+                  {day}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="flex items-center justify-between p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
+          <div>
+            <span className="text-xs font-medium text-neutral-300 block">Enable Schedule</span>
+            <span className="text-[11px] text-neutral-500">Timer will automatically start</span>
+          </div>
+          <Switch checked={isEnabled} onChange={setIsEnabled} />
+        </div>
+
+        <div className="flex gap-3 pt-2">
           <button
             type="submit"
-            className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg"
+            className="flex-1 py-2.5 px-4 bg-white text-black font-semibold text-xs uppercase tracking-wider rounded-xl hover:bg-neutral-200 active:scale-95 transition-all shadow-md"
           >
-            {initialValues ? 'Update Schedule' : 'Create Schedule'}
+            {initialValues ? 'Update Schedule' : 'Save Schedule'}
           </button>
           <button
             type="button"
             onClick={onCancel}
-            className="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg"
+            className="py-2.5 px-4 bg-white/[0.06] hover:bg-white/[0.1] text-neutral-300 text-xs font-semibold rounded-xl border border-white/[0.08] transition-all"
           >
             Cancel
           </button>

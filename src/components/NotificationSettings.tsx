@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { NotificationSettings as NotificationSettingsType } from '../types/timer';
 import { Switch } from './Switch';
-import { Bell, Volume2, Play } from 'lucide-react';
+import { Bell, Volume2, Play, AlertCircle } from 'lucide-react';
+import { playNotificationSound } from '../utils/notifications';
 
 interface NotificationSettingsProps {
   settings: NotificationSettingsType;
   onUpdate: (settings: NotificationSettingsType) => void;
+  onClose?: () => void;
 }
 
-export function NotificationSettings({ settings, onUpdate }: NotificationSettingsProps) {
+export function NotificationSettings({ settings, onUpdate, onClose }: NotificationSettingsProps) {
   const [permissionDenied, setPermissionDenied] = useState(false);
 
   useEffect(() => {
@@ -36,39 +38,65 @@ export function NotificationSettings({ settings, onUpdate }: NotificationSetting
   };
 
   const handleTestSound = () => {
-    const audio = new Audio('/sounds/complete.mp3');
-    audio.volume = settings.volume;
-    audio.play().catch(error => console.error('Error playing sound:', error));
+    playNotificationSound('test', settings.volume);
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div className="flex items-center gap-2">
-          <Bell className="w-5 h-5" />
-          <h2 className="text-xl font-semibold">Notifications</h2>
+      <div className="flex justify-between items-start">
+        <div>
+          <h3 className="text-base font-semibold text-white">Notifications & Sound</h3>
+          <p className="text-xs text-neutral-400">Desktop alerts and audible cues</p>
         </div>
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="p-1 rounded-lg text-neutral-400 hover:text-white hover:bg-white/[0.08] transition-all"
+            title="Close panel"
+          >
+            <span className="sr-only">Close</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        )}
       </div>
 
       <div className="space-y-4">
-        <div className="space-y-2">
+        {/* Master Notification Toggle */}
+        <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-3">
           <div className="flex items-center justify-between">
-            <label className="text-sm text-gray-300">Enable Notifications</label>
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                <Bell size={18} />
+              </div>
+              <div>
+                <span className="text-sm font-semibold text-white block">Desktop Notifications</span>
+                <span className="text-xs text-neutral-400">Alerts when session transitions</span>
+              </div>
+            </div>
             <Switch checked={settings.enabled} onChange={handleToggleNotifications} />
           </div>
+          
           {permissionDenied && (
-            <p className="text-sm text-red-400">
-              Please allow notifications in your browser settings to enable this feature.
-            </p>
+            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-300">
+              <AlertCircle size={14} className="shrink-0" />
+              <span>Notifications blocked by browser. Please enable permissions in address bar.</span>
+            </div>
           )}
         </div>
 
-        <div className="space-y-4 opacity-100 transition-opacity duration-200"
-             style={{ opacity: settings.enabled ? 1 : 0.5, pointerEvents: settings.enabled ? 'auto' : 'none' }}>
+        {/* Sound Controls */}
+        <div className={`p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-4 transition-opacity ${
+          settings.enabled ? 'opacity-100' : 'opacity-40 pointer-events-none'
+        }`}>
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Volume2 className="w-4 h-4" />
-              <label className="text-sm text-gray-300">Sound Effects</label>
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                <Volume2 size={18} />
+              </div>
+              <div>
+                <span className="text-sm font-semibold text-white block">Audio Chimes</span>
+                <span className="text-xs text-neutral-400">Synthesized acoustic bell cues</span>
+              </div>
             </div>
             <Switch
               checked={settings.sound}
@@ -78,42 +106,47 @@ export function NotificationSettings({ settings, onUpdate }: NotificationSetting
           </div>
 
           {settings.sound && (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <label className="text-sm text-gray-300">Volume</label>
+            <div className="pt-2 border-t border-white/[0.06] space-y-3">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-medium text-neutral-300">Volume</span>
                 <button
                   onClick={handleTestSound}
-                  className="p-2 rounded-lg hover:bg-gray-700 transition-colors"
-                  title="Test sound"
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-neutral-200 transition-all"
+                  title="Test sound chime"
                   disabled={!settings.enabled}
                 >
-                  <Play size={16} />
+                  <Play size={12} />
+                  Test Chime
                 </button>
               </div>
+
               <input
                 type="range"
                 min="0"
                 max="1"
-                step="0.1"
+                step="0.05"
                 value={settings.volume}
                 onChange={(e) => onUpdate({ ...settings, volume: parseFloat(e.target.value) })}
-                className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                className="w-full h-1.5 bg-white/[0.1] rounded-lg appearance-none cursor-pointer accent-rose-500"
                 disabled={!settings.enabled}
               />
-              <div className="flex justify-between text-xs text-gray-400">
-                <span>0%</span>
+              <div className="flex justify-between text-[10px] font-mono text-neutral-500">
+                <span>Mute</span>
                 <span>{Math.round(settings.volume * 100)}%</span>
-                <span>100%</span>
+                <span>Max</span>
               </div>
             </div>
           )}
         </div>
 
-        <div className="space-y-2 pt-4 border-t border-gray-800">
-          <h3 className="text-sm font-medium mb-3">Notify When:</h3>
+        {/* Granular Triggers */}
+        <div className={`p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-3 transition-opacity ${
+          settings.enabled ? 'opacity-100' : 'opacity-40 pointer-events-none'
+        }`}>
+          <span className="text-xs font-bold uppercase tracking-wider text-neutral-400 block mb-2">Trigger Triggers</span>
           
-          <div className="flex items-center justify-between">
-            <label className="text-sm text-gray-300">Work session complete</label>
+          <div className="flex items-center justify-between py-1">
+            <span className="text-sm text-neutral-300">Focus round completed</span>
             <Switch
               checked={settings.workComplete}
               onChange={(checked) => onUpdate({ ...settings, workComplete: checked })}
@@ -121,8 +154,8 @@ export function NotificationSettings({ settings, onUpdate }: NotificationSetting
             />
           </div>
 
-          <div className="flex items-center justify-between">
-            <label className="text-sm text-gray-300">Break session complete</label>
+          <div className="flex items-center justify-between py-1">
+            <span className="text-sm text-neutral-300">Break interval completed</span>
             <Switch
               checked={settings.breakComplete}
               onChange={(checked) => onUpdate({ ...settings, breakComplete: checked })}
@@ -130,8 +163,8 @@ export function NotificationSettings({ settings, onUpdate }: NotificationSetting
             />
           </div>
 
-          <div className="flex items-center justify-between">
-            <label className="text-sm text-gray-300">Full session complete</label>
+          <div className="flex items-center justify-between py-1">
+            <span className="text-sm text-neutral-300">All iterations completed</span>
             <Switch
               checked={settings.sessionComplete}
               onChange={(checked) => onUpdate({ ...settings, sessionComplete: checked })}

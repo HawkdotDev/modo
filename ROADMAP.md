@@ -1,8 +1,8 @@
-# Pomomer Roadmap
+# modo Roadmap
 
-This document outlines the planned features and improvements for future releases of Pomomer.
+This document outlines the planned features and improvements for future releases of modo.
 
-## Version 1.1.0 (Q2 2024)
+## Version 1.1.0
 
 ### Enhanced Timer Features
 - [ ] Long break after completing multiple work sessions
@@ -23,7 +23,7 @@ This document outlines the planned features and improvements for future releases
 - [ ] Productivity insights
 - [ ] Export statistics data
 
-## Version 1.2.0 (Q3 2024)
+## Version 1.2.0
 
 ### Task Management
 - [ ] Todo list integration
@@ -43,7 +43,7 @@ This document outlines the planned features and improvements for future releases
 - [ ] Team timer sessions
 - [ ] Public preset library
 
-## Version 1.3.0 (Q4 2024)
+## Version 1.3.0
 
 ### Cross-Platform Support
 - [ ] Progressive Web App (PWA)

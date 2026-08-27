@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, FormEvent } from 'react';
 import { TimerPreset, PresetChain, Schedule, RecurrenceType, scheduleSchema } from '../types/timer';
 import { Switch } from './Switch';
 
@@ -27,7 +27,7 @@ export function ScheduleForm({
   const [days, setDays] = useState<number[]>(initialValues?.days ?? []);
   const [isEnabled, setIsEnabled] = useState(initialValues?.isEnabled ?? true);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     
     const schedule = {

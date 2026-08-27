@@ -1,10 +1,8 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Schedule, TimerPreset, PresetChain } from '../types/timer';
+import { Schedule } from '../types/timer';
 
 export function useScheduler(
   schedules: Schedule[],
-  presets: TimerPreset[],
-  chains: PresetChain[],
   onScheduleStart: (presetId: string, chainId?: string) => void
 ) {
   const [nextSchedule, setNextSchedule] = useState<Schedule | null>(null);

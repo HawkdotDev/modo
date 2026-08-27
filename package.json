@@ -1,8 +1,34 @@
 {
-  "name": "pomomer",
+  "name": "modo",
   "private": true,
   "version": "1.0.0",
+  "description": "Aesthetic, minimalist, and ultra-smooth Pomodoro & interval focus timer with animated radial ambient aura, customizable routine chains, scheduled triggers, and synthesized chimes.",
   "type": "module",
+  "homepage": "https://github.com/HawkdotDev/pomomer#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HawkdotDev/pomomer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/HawkdotDev/pomomer/issues"
+  },
+  "keywords": [
+    "pomodoro",
+    "timer",
+    "focus",
+    "productivity",
+    "time-management",
+    "study-timer",
+    "react",
+    "typescript",
+    "tailwindcss",
+    "glassmorphism",
+    "ambient-glow"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",

@@ -1,53 +1,61 @@
-import React from 'react';
-import { Timer, Settings, Link2 } from 'lucide-react';
-import { ThemeToggle } from './ThemeToggle';
-
-interface NavbarProps {
-  showSettings: boolean;
-  onToggleSettings: () => void;
-  isDark: boolean;
-  onToggleTheme: () => void;
-  showChainPanel: boolean;
-  onToggleChainPanel: () => void;
+export function PomodoroIcon({ className = "w-7 h-7" }: { className?: string }) {
+  return (
+    <svg 
+      viewBox="0 0 24 24" 
+      fill="none" 
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
+      {/* Tomato round body with warm glow fill */}
+      <path 
+        d="M12 21.5C6.5 21.5 3 17.5 3 13C3 8.5 7 6.8 12 6.8C17 6.8 21 8.5 21 13C21 17.5 17.5 21.5 12 21.5Z" 
+        fill="currentColor" 
+        fillOpacity="0.25"
+        stroke="currentColor" 
+        strokeWidth="1.8" 
+        strokeLinecap="round" 
+        strokeLinejoin="round"
+      />
+      {/* Curved tomato surface contour line */}
+      <path 
+        d="M12 7C10.2 10.5 10.2 17.5 12 21.2" 
+        stroke="currentColor" 
+        strokeWidth="1.2" 
+        strokeOpacity="0.4"
+        strokeLinecap="round"
+      />
+      {/* Green stem & star leaf calyx */}
+      <path 
+        d="M12 6.5V2.5" 
+        stroke="#10b981" 
+        strokeWidth="2" 
+        strokeLinecap="round"
+      />
+      <path 
+        d="M12 6.5C10.5 4.5 8 4.8 6.5 5.5C8 7 10 7.2 12 6.5Z" 
+        fill="#10b981" 
+        stroke="#10b981" 
+        strokeWidth="1"
+        strokeLinejoin="round"
+      />
+      <path 
+        d="M12 6.5C13.5 4.5 16 4.8 17.5 5.5C16 7 14 7.2 12 6.5Z" 
+        fill="#10b981" 
+        stroke="#10b981" 
+        strokeWidth="1"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
 }
 
-export function Navbar({ 
-  showSettings, 
-  onToggleSettings, 
-  isDark, 
-  onToggleTheme,
-  showChainPanel,
-  onToggleChainPanel
-}: NavbarProps) {
+export function Navbar() {
   return (
-    <nav className="fixed top-0 left-0 right-0 h-16 bg-gray-900/50 backdrop-blur-sm border-b border-gray-800 z-50">
-      <div className="h-full max-w-7xl mx-auto px-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Timer className="w-6 h-6" />
-          <h1 className="text-xl font-bold">Pomodoro Timer</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={onToggleChainPanel}
-            className={`p-2 rounded-lg transition-colors ${
-              showChainPanel ? 'bg-gray-700' : 'hover:bg-gray-800'
-            }`}
-            title="Preset Chains"
-          >
-            <Link2 size={20} />
-          </button>
-          <ThemeToggle isDark={isDark} onToggle={onToggleTheme} />
-          <button
-            onClick={onToggleSettings}
-            className={`p-2 rounded-lg transition-colors ${
-              showSettings ? 'bg-gray-700' : 'hover:bg-gray-800'
-            }`}
-            title="Settings"
-          >
-            <Settings size={20} />
-          </button>
-        </div>
-      </div>
-    </nav>
+    <header className="fixed top-5 left-5 sm:top-6 sm:left-6 z-40 flex items-center gap-2.5 select-none pointer-events-auto">
+      <PomodoroIcon className="w-7 h-7 text-rose-500 drop-shadow-[0_0_12px_rgba(244,63,94,0.45)]" />
+      <span className="font-bold text-xl tracking-tight bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent">
+        modo
+      </span>
+    </header>
   );
 }

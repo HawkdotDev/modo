@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import { useState, FormEvent } from 'react';
 import { TimerPreset } from '../types/timer';
 import { Switch } from './Switch';
+import { Sparkles } from 'lucide-react';
 
 interface PresetFormProps {
   onSave: (preset: Omit<TimerPreset, 'id'>) => void;
@@ -27,10 +28,9 @@ export function PresetForm({
   const [requireManualStart, setRequireManualStart] = useState(initialValues?.requireManualStart ?? false);
   const [isDefault, setIsDefault] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     
-    // If setting as default, remove default from other presets
     if (isDefault && existingPresets) {
       existingPresets.forEach(preset => {
         if (preset.isDefault) {
@@ -40,7 +40,7 @@ export function PresetForm({
     }
     
     onSave({
-      name,
+      name: name.trim() || 'Custom Session',
       workMinutes,
       breakMinutes,
       iterations,
@@ -52,85 +52,100 @@ export function PresetForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full max-w-md">
-      <h2 className="text-xl font-semibold">Create New Preset</h2>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full">
+      <div>
+        <h3 className="text-base font-semibold text-white flex items-center gap-2">
+          <Sparkles size={16} className="text-rose-400" />
+          Create Preset
+        </h3>
+        <p className="text-xs text-neutral-400">Save your custom routine for instant access</p>
+      </div>
       
-      <div className="flex flex-col gap-2">
-        <label className="text-sm text-gray-300">Preset Name</label>
+      <div className="flex flex-col gap-1.5">
+        <label className="text-xs font-semibold text-neutral-300">Preset Name</label>
         <input
           type="text"
           value={name}
+          placeholder="e.g. Ultra Focus"
           onChange={(e) => setName(e.target.value)}
-          className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+          className="px-3.5 py-2.5 bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-rose-500/50 focus:ring-1 focus:ring-rose-500/50 transition-all"
           required
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="flex flex-col gap-2">
-          <label className="text-sm text-gray-300">Work Minutes</label>
+      <div className="grid grid-cols-2 gap-3">
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-semibold text-neutral-300">Work Duration (m)</label>
           <input
             type="number"
             min="1"
-            max="60"
+            max="120"
             value={workMinutes}
-            onChange={(e) => setWorkMinutes(parseInt(e.target.value) || 1)}
-            className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+            onChange={(e) => setWorkMinutes(Math.max(1, parseInt(e.target.value) || 1))}
+            className="px-3.5 py-2.5 bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm font-mono text-white focus:outline-none focus:border-rose-500/50 focus:ring-1 focus:ring-rose-500/50"
           />
         </div>
 
-        <div className="flex flex-col gap-2">
-          <label className="text-sm text-gray-300">Break Minutes</label>
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-semibold text-neutral-300">Break Duration (m)</label>
           <input
             type="number"
             min="1"
             max="60"
             value={breakMinutes}
-            onChange={(e) => setBreakMinutes(parseInt(e.target.value) || 1)}
-            className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+            onChange={(e) => setBreakMinutes(Math.max(1, parseInt(e.target.value) || 1))}
+            className="px-3.5 py-2.5 bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm font-mono text-white focus:outline-none focus:border-rose-500/50 focus:ring-1 focus:ring-rose-500/50"
           />
         </div>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <label className="text-sm text-gray-300">Number of Iterations</label>
+      <div className="flex flex-col gap-1.5">
+        <label className="text-xs font-semibold text-neutral-300">Number of Rounds</label>
         <input
           type="number"
           min="1"
-          max="10"
+          max="12"
           value={iterations}
-          onChange={(e) => setIterations(parseInt(e.target.value) || 1)}
-          className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+          onChange={(e) => setIterations(Math.max(1, parseInt(e.target.value) || 1))}
+          className="px-3.5 py-2.5 bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm font-mono text-white focus:outline-none focus:border-rose-500/50 focus:ring-1 focus:ring-rose-500/50"
         />
       </div>
 
-      <div className="flex items-center justify-between py-2">
-        <label className="text-sm text-gray-300">Require Manual Start</label>
-        <Switch
-          checked={requireManualStart}
-          onChange={setRequireManualStart}
-        />
+      <div className="space-y-3 p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
+        <div className="flex items-center justify-between">
+          <div>
+            <span className="text-xs font-medium text-neutral-300 block">Manual Start</span>
+            <span className="text-[11px] text-neutral-500">Wait for click between sessions</span>
+          </div>
+          <Switch
+            checked={requireManualStart}
+            onChange={setRequireManualStart}
+          />
+        </div>
+
+        <div className="flex items-center justify-between pt-2 border-t border-white/[0.06]">
+          <div>
+            <span className="text-xs font-medium text-neutral-300 block">Default Preset</span>
+            <span className="text-[11px] text-neutral-500">Auto-load on startup</span>
+          </div>
+          <Switch
+            checked={isDefault}
+            onChange={setIsDefault}
+          />
+        </div>
       </div>
 
-      <div className="flex items-center justify-between py-2">
-        <label className="text-sm text-gray-300">Set as Default Preset</label>
-        <Switch
-          checked={isDefault}
-          onChange={setIsDefault}
-        />
-      </div>
-
-      <div className="flex gap-4 mt-4">
+      <div className="flex gap-3 mt-2">
         <button
           type="submit"
-          className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+          className="flex-1 py-2.5 px-4 bg-white text-black font-semibold text-xs uppercase tracking-wider rounded-xl hover:bg-neutral-200 active:scale-95 transition-all shadow-md"
         >
           Save Preset
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
+          className="py-2.5 px-4 bg-white/[0.06] hover:bg-white/[0.1] text-neutral-300 text-xs font-semibold rounded-xl border border-white/[0.08] transition-all"
         >
           Cancel
         </button>
