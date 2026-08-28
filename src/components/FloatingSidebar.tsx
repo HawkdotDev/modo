@@ -14,6 +14,7 @@ import {
   Minimize2
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { isFullscreenActive, toggleFullscreen } from '../utils/fullscreen';
 
 const QuickSettingsTab = lazy(() => import('./sidebar/QuickSettingsTab').then(m => ({ default: m.QuickSettingsTab })));
 const ChainsTab = lazy(() => import('./sidebar/ChainsTab').then(m => ({ default: m.ChainsTab })));
@@ -59,32 +60,29 @@ export const FloatingSidebar = memo(function FloatingSidebar({
   const isExpanded = activeTab !== null;
   const currentAccent = colors.accentColor || '#f43f5e';
 
-  const [isFullscreen, setIsFullscreen] = useState<boolean>(() => {
-    return typeof document !== 'undefined' && !!document.fullscreenElement;
-  });
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(() => isFullscreenActive());
 
   useEffect(() => {
     const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
+      setIsFullscreen(isFullscreenActive());
     };
+
     document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
     return () => {
       document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
     };
   }, []);
 
   const handleToggleFullscreen = async () => {
-    try {
-      if (!document.fullscreenElement) {
-        await document.documentElement.requestFullscreen();
-      } else {
-        if (document.exitFullscreen) {
-          await document.exitFullscreen();
-        }
-      }
-    } catch (err) {
-      console.warn('Fullscreen request error:', err);
-    }
+    const active = await toggleFullscreen();
+    setIsFullscreen(active);
   };
 
   const handleTabClick = (tabId: FloatingTabType) => {

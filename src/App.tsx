@@ -1,4 +1,4 @@
-import { useState, memo } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 import { SettingsProvider, useSettings } from './context/SettingsContext';
 import { TimerProvider, useTimerContext } from './context/TimerContext';
@@ -9,8 +9,8 @@ import { VideoBackground } from './components/VideoBackground';
 import { AmbientGlow } from './components/AmbientGlow';
 import { useVideoBackground } from './hooks/useVideoBackground';
 import { Trophy, RotateCcw } from 'lucide-react';
-
 import { StorageService } from './services/storageService';
+import { toggleFullscreen } from './utils/fullscreen';
 
 const MainTimerSection = memo(function MainTimerSection({ 
   onOpenPresetForm 
@@ -51,7 +51,7 @@ function AppLayout() {
     StorageService.getActiveSidebarTab<FloatingTabType>()
   );
   const { colors } = useTheme();
-  const { isRunning } = useTimerContext();
+  const { isRunning, toggle, reset } = useTimerContext();
   const { config: videoConfig } = useVideoBackground();
 
   const handleSelectTab = (tab: FloatingTabType | null) => {
@@ -62,6 +62,40 @@ function AppLayout() {
   const handleOpenPresetForm = () => {
     handleSelectTab('presets');
   };
+
+  // Global Keyboard Shortcuts (F = Fullscreen, Space = Play/Pause, R = Reset, Esc = Close Sidebar)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const activeEl = document.activeElement;
+      const isInput = activeEl && (
+        activeEl.tagName === 'INPUT' ||
+        activeEl.tagName === 'TEXTAREA' ||
+        activeEl.tagName === 'SELECT' ||
+        activeEl.getAttribute('contenteditable') === 'true'
+      );
+
+      if (isInput) return;
+
+      if (e.code === 'KeyF') {
+        e.preventDefault();
+        toggleFullscreen();
+      } else if (e.code === 'Space') {
+        e.preventDefault();
+        toggle();
+      } else if (e.code === 'KeyR') {
+        e.preventDefault();
+        reset();
+      } else if (e.code === 'Escape') {
+        if (activeFloatingTab !== null) {
+          e.preventDefault();
+          handleSelectTab(null);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [toggle, reset, activeFloatingTab]);
 
   return (
     <div 
