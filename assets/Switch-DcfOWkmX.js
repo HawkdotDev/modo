@@ -1,4 +1,4 @@
-import{j as n}from"./index-fbL_I9Kp.js";import{r as a}from"./vendor-react-uYDHyRUA.js";const u=a.memo(function({checked:t,onChange:r,disabled:o=!1,activeColor:s}){const e=s||"#f43f5e";return n.jsx("button",{type:"button",role:"switch","aria-checked":t,onClick:()=>!o&&r(!t),className:`
+import{j as n}from"./index-DhmCHxJJ.js";import{r as a}from"./vendor-react-uYDHyRUA.js";const u=a.memo(function({checked:t,onChange:r,disabled:o=!1,activeColor:s}){const e=s||"#f43f5e";return n.jsx("button",{type:"button",role:"switch","aria-checked":t,onClick:()=>!o&&r(!t),className:`
         relative inline-flex h-5 w-9 shrink-0 items-center rounded-full p-[2px]
         transition-all duration-300 ease-out focus:outline-none select-none
         ${t?"":"bg-white/[0.14] hover:bg-white/[0.22]"}
