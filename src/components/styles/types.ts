@@ -8,6 +8,8 @@ export interface ClockSceneProps {
   progress: number;
   isRunning: boolean;
   themeColor: string;
+  workColor?: string;
+  breakColor?: string;
   accentColor?: string;
   children?: ReactNode;
   showGlow?: boolean;

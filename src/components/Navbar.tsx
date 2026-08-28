@@ -87,7 +87,7 @@ export const Navbar = memo(function Navbar({ accentColor = '#f43f5e' }: NavbarPr
         >
           <PomodoroIcon className="w-7 h-7" />
         </div>
-        <h1 className="font-bold text-lg tracking-tight bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent group-hover:brightness-125 transition-all duration-300 m-0 leading-none">
+        <h1 className="font-medium text-lg tracking-tight bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent group-hover:brightness-125 transition-all duration-300 m-0 leading-none">
           Modo
         </h1>
       </div>
