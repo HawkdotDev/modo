@@ -1,4 +1,6 @@
-import { memo } from 'react';
+import { useState, memo } from 'react';
+import { Info } from 'lucide-react';
+import { AboutModal } from './AboutModal';
 
 export function PomodoroIcon({ className = "w-7 h-7" }: { className?: string }) {
   return (
@@ -32,7 +34,7 @@ export function PomodoroIcon({ className = "w-7 h-7" }: { className?: string }) 
         d="M12 6.5V2.5" 
         stroke="#10b981" 
         strokeWidth="2" 
-        strokeLinecap="round"
+        strokeLinecap="round" 
       />
       <path 
         d="M12 6.5C10.5 4.5 8 4.8 6.5 5.5C8 7 10 7.2 12 6.5Z" 
@@ -74,40 +76,62 @@ interface NavbarProps {
 }
 
 export const Navbar = memo(function Navbar({ accentColor = '#f43f5e' }: NavbarProps) {
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
+
   return (
-    <header className="fixed top-5 left-5 sm:top-6 sm:left-6 z-40 flex items-center gap-3 select-none pointer-events-auto">
-      {/* Brand Icon & Title */}
-      <div className="flex items-center gap-2.5 group cursor-default">
-        <div 
-          style={{ 
-            color: accentColor, 
-            filter: `drop-shadow(0 0 12px ${accentColor}80)` 
-          }}
-          className="transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 group-active:scale-95"
-        >
-          <PomodoroIcon className="w-7 h-7" />
+    <>
+      <header className="fixed top-5 left-5 sm:top-6 sm:left-6 z-40 flex items-center gap-2.5 sm:gap-3 select-none pointer-events-auto">
+        {/* Brand Icon & Title */}
+        <div className="flex items-center gap-2.5 group cursor-default">
+          <div 
+            style={{ 
+              color: accentColor, 
+              filter: `drop-shadow(0 0 12px ${accentColor}80)` 
+            }}
+            className="transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 group-active:scale-95"
+          >
+            <PomodoroIcon className="w-7 h-7" />
+          </div>
+          <h1 className="font-medium text-lg tracking-tight bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent group-hover:brightness-125 transition-all duration-300 m-0 leading-none">
+            Modo
+          </h1>
         </div>
-        <h1 className="font-medium text-lg tracking-tight bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent group-hover:brightness-125 transition-all duration-300 m-0 leading-none">
-          Modo
-        </h1>
-      </div>
 
-      {/* Pipe Separator */}
-      <span className="text-white/20 font-extralight text-sm select-none" aria-hidden="true">
-        |
-      </span>
+        {/* Pipe Separator */}
+        <span className="text-white/20 font-extralight text-sm select-none" aria-hidden="true">
+          |
+        </span>
 
-      {/* GitHub Repository Link */}
-      <a
-        href="https://github.com/HawkdotDev/modo"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="p-2 rounded-xl text-neutral-400 hover:text-white bg-white/[0.03] hover:bg-white/[0.1] border border-white/[0.06] hover:border-white/20 backdrop-blur-xl shadow-sm transition-all duration-300 hover:scale-110 active:scale-90 flex items-center justify-center group"
-        title="View Modo on GitHub"
-        aria-label="View Modo on GitHub"
-      >
-        <GithubIcon className="w-4 h-4 text-neutral-400 group-hover:text-white group-hover:rotate-6 transition-all duration-200" />
-      </a>
-    </header>
+        {/* About Page Trigger Button */}
+        <button
+          type="button"
+          onClick={() => setIsAboutOpen(true)}
+          className="p-2 rounded-xl text-neutral-400 hover:text-white bg-white/[0.03] hover:bg-white/[0.1] border border-white/[0.06] hover:border-white/20 backdrop-blur-xl shadow-sm transition-all duration-300 hover:scale-110 active:scale-90 flex items-center justify-center group"
+          title="About Modo & Keyboard Shortcuts"
+          aria-label="About Modo & Keyboard Shortcuts"
+        >
+          <Info size={15} className="text-neutral-400 group-hover:text-white group-hover:rotate-12 transition-all duration-200" />
+        </button>
+
+        {/* GitHub Repository Link */}
+        <a
+          href="https://github.com/HawkdotDev/modo"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="p-2 rounded-xl text-neutral-400 hover:text-white bg-white/[0.03] hover:bg-white/[0.1] border border-white/[0.06] hover:border-white/20 backdrop-blur-xl shadow-sm transition-all duration-300 hover:scale-110 active:scale-90 flex items-center justify-center group"
+          title="View Modo on GitHub"
+          aria-label="View Modo on GitHub"
+        >
+          <GithubIcon className="w-4 h-4 text-neutral-400 group-hover:text-white group-hover:rotate-6 transition-all duration-200" />
+        </a>
+      </header>
+
+      {/* About Modal Dialog */}
+      <AboutModal
+        isOpen={isAboutOpen}
+        onClose={() => setIsAboutOpen(false)}
+        accentColor={accentColor}
+      />
+    </>
   );
 });
