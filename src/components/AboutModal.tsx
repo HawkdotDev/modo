@@ -236,43 +236,43 @@ export function AboutModal({ isOpen, onClose, accentColor = '#f43f5e' }: AboutMo
 
           {/* TAB 2: THE SCIENCE */}
           {activeTab === 'science' && (
-            <div className="space-y-4 animate-fade-in">
-              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] space-y-2">
+            <div className="space-y-3.5 animate-fade-in">
+              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] space-y-1.5">
                 <div className="flex items-center gap-2 text-sm font-semibold text-white">
-                  <Clock size={16} className="text-rose-400" />
+                  <Clock size={15} className="text-rose-400" />
                   The Pomodoro Principle & Attention Economics
                 </div>
-                <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed">
+                <p className="text-xs sm:text-[13px] text-neutral-400 leading-relaxed font-normal">
                   Developed by Francesco Cirillo in the late 1980s, the Pomodoro Technique optimizes cognitive performance by breaking work into 25-minute intervals separated by short 5-minute rests. This rhythm prevents executive brain fatigue and sustains motivation over long sessions.
                 </p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] space-y-2">
+              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] space-y-1.5">
                 <div className="flex items-center gap-2 text-sm font-semibold text-white">
-                  <Brain size={16} className="text-amber-400" />
+                  <Brain size={15} className="text-amber-400" />
                   Ultradian Biological Rhythms (90/20)
                 </div>
-                <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed">
+                <p className="text-xs sm:text-[13px] text-neutral-400 leading-relaxed font-normal">
                   Human brain alertness operates in 90-minute biological cycles. Modo includes an Ultradian 90/20 preset that aligns with natural peak-performance windows, giving your prefrontal cortex adequate time to recharge after intense cognitive expenditure.
                 </p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] space-y-2">
+              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] space-y-1.5">
                 <div className="flex items-center gap-2 text-sm font-semibold text-white">
-                  <Radio size={16} className="text-cyan-400" />
+                  <Radio size={15} className="text-cyan-400" />
                   432Hz Carrier & 10Hz Alpha Wave Entrainment
                 </div>
-                <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed">
+                <p className="text-xs sm:text-[13px] text-neutral-400 leading-relaxed font-normal">
                   Alpha brainwaves (8 to 12 Hz) correlate with relaxed yet sharp mental concentration. Modo delivers a 10Hz frequency differential across a harmonic 432Hz carrier tone, fostering auditory brainwave entrainment to block internal mind-wandering.
                 </p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] space-y-2">
+              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] space-y-1.5">
                 <div className="flex items-center gap-2 text-sm font-semibold text-white">
-                  <Waves size={16} className="text-emerald-400" />
+                  <Waves size={15} className="text-emerald-400" />
                   Brownian Noise Distraction Masking
                 </div>
-                <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed">
+                <p className="text-xs sm:text-[13px] text-neutral-400 leading-relaxed font-normal">
                   Brownian noise features a 1/f² spectral power density, emphasizing soothing low frequencies like deep waterfalls. Unlike harsh white noise, it dampens abrupt environmental noise spikes without causing auditory fatigue.
                 </p>
               </div>
