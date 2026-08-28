@@ -16,6 +16,7 @@ export interface TimerState {
 
 export interface TimerActions {
   toggleTimer: () => void;
+  toggle: () => void;
   reset: () => void;
   updateSettings: (settings: Parameters<ReturnType<typeof useTimer>['updateSettings']>[0]) => void;
 }
@@ -83,6 +84,7 @@ export function TimerProvider({ children }: { children: ReactNode }) {
     isComplete: timer.isComplete,
     waitingForManualStart: timer.waitingForManualStart,
     toggleTimer: timer.toggleTimer,
+    toggle: timer.toggleTimer,
     reset: timer.reset,
     updateSettings: timer.updateSettings
   }), [
