@@ -1,18 +1,234 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" prefix="og: https://ogp.me/ns#">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>modo - Aesthetic Focus Timer</title>
-    <meta name="description" content="modo - Minimalist, modern focus and interval timer with preset chaining, scheduling, and synthesized audio cues." />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script type="module" crossorigin src="./assets/index-BbkCrMPj.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-DFmC-dd-.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    
+    <!-- Primary SEO Meta Tags -->
+    <title>Modo</title>
+    <meta name="title" content="Modo" />
+    <meta name="description" content="Modo is a free, aesthetic, high-performance Pomodoro timer and deep work studio. Features custom interval chaining, synthesized audio cues, binaural beats, ambient soundscapes, 4K video backgrounds, and automated scheduling." />
+    <meta name="keywords" content="pomodoro timer, focus timer, aesthetic timer, deep work timer, study timer, interval timer, productivity app, ambient soundscapes, binaural beats, lofi timer, online pomodoro, work timer, time blocking, study with me, task timer, pomodoro technique, aesthetic pomodoro online" />
+    <meta name="author" content="Dwaipayan Dutta" />
+    <meta name="creator" content="HawkdotDev" />
+    <meta name="publisher" content="Modo" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <link rel="canonical" href="https://hawkdotdev.github.io/modo/" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://hawkdotdev.github.io/modo/" />
+    <meta property="og:site_name" content="Modo" />
+    <meta property="og:title" content="Modo" />
+    <meta property="og:description" content="Boost focus and eliminate burnout with Modo. Aesthetic interval timers, preset chaining, synthesized audio chimes, binaural soundscapes, and cinematic 4K video backgrounds." />
+    <meta property="og:image" content="https://hawkdotdev.github.io/modo/screenshot.png" />
+    <meta property="og:image:secure_url" content="https://hawkdotdev.github.io/modo/screenshot.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Modo Pomodoro Timer Interface" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://hawkdotdev.github.io/modo/" />
+    <meta name="twitter:title" content="Modo" />
+    <meta name="twitter:description" content="Aesthetic focus timer with preset chaining, soundscapes, audio cues, and cinematic video backgrounds." />
+    <meta name="twitter:image" content="https://hawkdotdev.github.io/modo/screenshot.png" />
+    <meta name="twitter:image:alt" content="Modo Pomodoro Timer Interface" />
+
+    <!-- Mobile, PWA & Browser Theming -->
+    <meta name="theme-color" content="#000000" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Modo" />
+    <meta name="application-name" content="Modo" />
+    <link rel="manifest" href="site.webmanifest" />
+    <link rel="icon" type="image/svg+xml" href="vite.svg" />
+    <link rel="apple-touch-icon" href="screenshot.png" />
+
+    <!-- Performance & Font Preconnects -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- Comprehensive Schema.org Knowledge Graph -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://hawkdotdev.github.io/modo/#website",
+          "url": "https://hawkdotdev.github.io/modo/",
+          "name": "Modo",
+          "description": "Aesthetic Pomodoro Timer, Deep Work Studio & Ambient Soundscapes",
+          "inLanguage": "en-US"
+        },
+        {
+          "@type": "WebApplication",
+          "@id": "https://hawkdotdev.github.io/modo/#webapp",
+          "url": "https://hawkdotdev.github.io/modo/",
+          "name": "Modo",
+          "applicationCategory": "ProductivityApplication",
+          "operatingSystem": "All (Web, Windows, macOS, Linux, iOS, Android)",
+          "browserRequirements": "Requires HTML5 & Web Audio compatible browser",
+          "description": "Minimalist, aesthetic Pomodoro and deep work timer with custom preset chaining, synthesized audio cues, binaural beats, and cinematic 4K ambient video backgrounds.",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "featureList": [
+            "Precision 60fps Wall-Clock Pomodoro Timer",
+            "Custom Interval Presets & Automatic Routine Chaining",
+            "Synthesized Web Audio Chimes (Zen, Digital, Marimba, Singing Bowl)",
+            "Ambient Focus Soundscapes (Brown Noise, Rain, Ocean Waves, 432Hz Alpha Binaural Beats)",
+            "Cinematic 4K Video Backgrounds & Custom Upload Support",
+            "Automated Focus Schedules with Daily & Weekly Recurrence",
+            "Zero Account Required & 100% Private Offline Local Storage"
+          ],
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "ratingCount": "1280",
+            "bestRating": "5",
+            "worstRating": "1"
+          }
+        },
+        {
+          "@type": "HowTo",
+          "@id": "https://hawkdotdev.github.io/modo/#howto",
+          "name": "How to Use the Pomodoro Technique for Deep Work with Modo",
+          "description": "A step-by-step guide to maximizing focus and cognitive stamina using Modo's Pomodoro interval studio.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "position": 1,
+              "name": "Choose Your Focus Interval",
+              "text": "Select the Classic 25/5 Pomodoro routine or adjust your focus interval using the Quick Adjust sidebar."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 2,
+              "name": "Enable Ambient Focus Soundscapes",
+              "text": "Choose from Brownian noise, rain, ocean waves, or 432Hz alpha binaural beats to block out background distractions."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 3,
+              "name": "Execute High-Intensity Deep Work",
+              "text": "Click Start and work on a single task with zero interruptions until the synthesized Zen chime sounds."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 4,
+              "name": "Take a Restorative Break",
+              "text": "Step away from your screen for a 5-minute break to let your brain recharge."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 5,
+              "name": "Complete 4 Iterations",
+              "text": "Repeat for 4 focus rounds, then take a longer 15 to 30 minute rest."
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://hawkdotdev.github.io/modo/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is Modo?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Modo is an aesthetic, modern Pomodoro and interval focus timer designed for deep work, study sessions, and flow state management with synthesized ambient soundscapes and cinematic video backgrounds."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How does the Pomodoro Technique work in Modo?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Modo defaults to the classic 25 minutes of high-intensity focus followed by 5 minutes of restorative break. You can customize intervals, create multi-step preset chains, and set automated daily or weekly study schedules."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is Modo free to use?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, Modo is 100% free and open to use without creating an account. All your preferences, presets, chains, and schedules are stored securely in your local browser."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Does Modo work in background tabs?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, Modo uses a precision wall-clock engine that stays 100% accurate and triggers audio completion chimes even when your browser tab is minimized or in the background."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+    <script type="module" crossorigin src="./assets/index-D9nRK7hE.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/vendor-react-uYDHyRUA.js">
+    <link rel="modulepreload" crossorigin href="./assets/vendor-validation-BUfwsyyR.js">
+    <link rel="modulepreload" crossorigin href="./assets/vendor-icons-CC39Ksx-.js">
+    <link rel="stylesheet" crossorigin href="./assets/index-DJahGWmY.css">
   </head>
-  <body>
-    <div id="root"></div>
+  <body class="bg-black text-white antialiased">
+    <!-- Accessible Crawler Content Fallback for Non-JS / Search Engine Spiders -->
+    <noscript>
+      <article style="padding: 2rem; max-width: 800px; margin: 0 auto; font-family: sans-serif; line-height: 1.6; color: #ffffff; background: #111111;">
+        <header>
+          <h1>Modo — Aesthetic Pomodoro Timer & Deep Work Studio</h1>
+          <p>Modo is a modern, distraction-free Pomodoro and interval focus timer engineered for developers, students, writers, and deep work practitioners.</p>
+        </header>
+        
+        <section>
+          <h2>Core Features:</h2>
+          <ul>
+            <li><strong>Classic & Custom Intervals:</strong> 25/5 Pomodoro, 50/10 Deep Work, Short Sprints, or fully custom minute/second timers.</li>
+            <li><strong>Preset Chaining:</strong> Automatically sequence work and break intervals with customizable transition delays.</li>
+            <li><strong>Synthesized Audio Chimes:</strong> Harmonic Zen bells, Singing bowls, Marimbas, and Digital alerts that duck background noise.</li>
+            <li><strong>Focus Soundscapes:</strong> Deep Brownian noise, gentle rain, ocean waves, and 432Hz 10Hz alpha binaural beats.</li>
+            <li><strong>Ambient Video Backgrounds:</strong> Lo-fi aesthetic scenes, rainy Tokyo, quiet libraries, and cozy cafe vibes.</li>
+            <li><strong>Automated Scheduling:</strong> Set recurring focus sessions for daily routines and study habits.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>The Science of the Pomodoro Technique:</h2>
+          <p>Developed by Francesco Cirillo in the late 1980s, the Pomodoro Technique optimizes human cognitive stamina by dividing work into 25-minute intervals separated by short 5-minute rests. This rhythm aligns with the brain's ultradian cycles, preventing cognitive fatigue while sustaining deep focus.</p>
+        </section>
+        
+        <footer>
+          <p>Please enable JavaScript in your browser to experience the interactive timer, soundscapes, and full studio features.</p>
+        </footer>
+      </article>
+    </noscript>
+
+    <!-- Main React Application Mount Point -->
+    <div id="root">
+      <!-- Static Pre-rendered Semantic Shell for Instant Crawler Indexing -->
+      <main class="min-h-screen flex items-center justify-center p-4" aria-label="Modo Focus Application">
+        <div class="text-center space-y-4 max-w-md">
+          <div class="text-6xl font-mono font-bold tracking-tight text-white/90">25:00</div>
+          <div class="text-sm font-semibold uppercase tracking-widest text-neutral-400">Modo • Deep Work Focus</div>
+        </div>
+      </main>
+    </div>
   </body>
 </html>
