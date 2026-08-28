@@ -1,8 +1,8 @@
 {
   "name": "modo",
   "private": true,
-  "version": "1.0.0",
-  "description": "Aesthetic, minimalist, and ultra-smooth Pomodoro & interval focus timer with animated radial ambient aura, customizable routine chains, scheduled triggers, and synthesized chimes.",
+  "version": "1.1.0",
+  "description": "Modo — Minimalist, aesthetic Pomodoro timer and deep work studio with preset chaining, ambient soundscapes, synthesized audio cues, 4K video backgrounds, and automated scheduling.",
   "type": "module",
   "homepage": "https://hawkdotdev.github.io/modo/",
   "repository": {
@@ -17,13 +17,17 @@
     "timer",
     "focus",
     "productivity",
-    "time-management",
+    "deep-work",
     "study-timer",
+    "time-management",
+    "soundscapes",
+    "binaural-beats",
     "react",
     "typescript",
     "tailwindcss",
     "glassmorphism",
-    "ambient-glow"
+    "ambient-glow",
+    "web-audio"
   ],
   "license": "MIT",
   "engines": {

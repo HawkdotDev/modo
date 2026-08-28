@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Headphones, Volume2, Play, Square, Sparkles, Waves, CloudRain, Zap, Radio, BellRing } from 'lucide-react';
 import { Switch } from './Switch';
 import { audioEngine, ChimeStyle, SoundscapeType } from '../utils/audioEngine';
+import { StorageService } from '../services/storageService';
 
 interface AudioSettingsProps {
   soundEnabled: boolean;
@@ -34,24 +35,10 @@ export function AudioSettings({
   isRunning = false,
   onClose
 }: AudioSettingsProps) {
-  const [selectedChime, setSelectedChime] = useState<ChimeStyle>(() => {
-    try {
-      return (localStorage.getItem('modo_chime_style') as ChimeStyle) || 'zen';
-    } catch {
-      return 'zen';
-    }
-  });
-
+  const [selectedChime, setSelectedChime] = useState<ChimeStyle>(() => StorageService.getChimeStyle());
   const [activeSoundscape, setActiveSoundscape] = useState<SoundscapeType>(() => audioEngine.getActiveSoundscape());
   const [soundscapeVolume, setSoundscapeVolume] = useState<number>(0.5);
-  const [autoPauseSoundscape, setAutoPauseSoundscape] = useState<boolean>(() => {
-    try {
-      const saved = localStorage.getItem('modo_autopause_soundscape');
-      return saved !== null ? saved === 'true' : true;
-    } catch {
-      return true;
-    }
-  });
+  const [autoPauseSoundscape, setAutoPauseSoundscape] = useState<boolean>(() => StorageService.getAutoPauseSoundscape());
 
   useEffect(() => {
     audioEngine.setMasterVolume(volume);
@@ -66,11 +53,7 @@ export function AudioSettings({
 
   const handleSelectChime = (chime: ChimeStyle) => {
     setSelectedChime(chime);
-    try {
-      localStorage.setItem('modo_chime_style', chime);
-    } catch (e) {
-      console.warn('Failed to save chime style:', e);
-    }
+    StorageService.setChimeStyle(chime);
     audioEngine.playChime(chime, 'test', volume);
   };
 
@@ -95,11 +78,7 @@ export function AudioSettings({
 
   const handleToggleAutoPause = (enabled: boolean) => {
     setAutoPauseSoundscape(enabled);
-    try {
-      localStorage.setItem('modo_autopause_soundscape', String(enabled));
-    } catch (e) {
-      console.warn('Failed to save autopause preference:', e);
-    }
+    StorageService.setAutoPauseSoundscape(enabled);
   };
 
   const chimeOptions: { id: ChimeStyle; name: string; desc: string }[] = [

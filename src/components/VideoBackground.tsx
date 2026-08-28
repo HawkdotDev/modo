@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, memo } from 'react';
 import { VideoBackgroundConfig } from '../types/video';
 import { extractYouTubeId } from '../utils/videoUtils';
 
@@ -7,7 +7,7 @@ interface VideoBackgroundProps {
   isRunning?: boolean;
 }
 
-export function VideoBackground({ config, isRunning = false }: VideoBackgroundProps) {
+export const VideoBackground = memo(function VideoBackground({ config, isRunning = false }: VideoBackgroundProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [loadError, setLoadError] = useState(false);
 
@@ -115,4 +115,4 @@ export function VideoBackground({ config, isRunning = false }: VideoBackgroundPr
       )}
     </div>
   );
-}
+});

@@ -2,10 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hide scrollbars globally — all browsers */
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE / Edge */
+}
+*::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+html {
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   color: #ffffff;
   background-color: #181818;
   overflow-x: hidden;
@@ -16,12 +29,14 @@ body {
   color: #fecdd3;
 }
 
-/* Glassmorphic Surfaces */
+/* Hardware-Accelerated Glassmorphic Surfaces */
 .glass-panel {
-  background: rgba(18, 18, 22, 0.7);
+  background: rgba(18, 18, 22, 0.72);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .glass-card {
@@ -29,6 +44,8 @@ body {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.07);
+  transform: translateZ(0);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-card:hover {
@@ -42,41 +59,24 @@ body {
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  transform: translateZ(0);
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 9999px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.28);
-}
-
-/* Ambient Radial Glow Animations */
+/* Ambient Radial Glow Animations — 100% GPU Composited */
 .ambient-glow-wrapper {
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate3d(-50%, -50%, 0);
   pointer-events: none;
   z-index: 0;
-  transition: transform 0.3s ease-in-out;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
 }
 
 @media (min-width: 1024px) {
   .ambient-glow-wrapper.shifted {
-    transform: translate(calc(-50% - 195px), -50%);
+    transform: translate3d(calc(-50% - 195px), -50%, 0);
   }
 }
 
@@ -85,9 +85,10 @@ body {
   height: 650px;
   border-radius: 50%;
   filter: blur(120px);
-  animation: aura-breathe 9s ease-in-out infinite alternate;
-  transition: background-color 1s ease, opacity 1s ease;
-  will-change: transform, border-radius;
+  animation: aura-breathe 10s ease-in-out infinite alternate;
+  transition: background-color 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+  transform: translateZ(0);
 }
 
 .ambient-glow-secondary {
@@ -98,38 +99,36 @@ body {
   height: 480px;
   border-radius: 50%;
   filter: blur(100px);
-  animation: aura-orbit 16s linear infinite;
-  transition: background-color 1s ease, opacity 1s ease;
-  will-change: transform;
+  animation: aura-orbit 18s linear infinite;
+  transition: background-color 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+  transform: translateZ(0);
 }
 
 @keyframes aura-breathe {
   0% {
-    transform: scale(0.92) rotate(0deg);
-    border-radius: 46% 54% 50% 50% / 52% 48% 52% 48%;
+    transform: scale3d(0.92, 0.92, 1) rotate(0deg);
   }
   50% {
-    transform: scale(1.12) rotate(45deg);
-    border-radius: 54% 46% 62% 38% / 44% 56% 44% 56%;
+    transform: scale3d(1.10, 1.10, 1) rotate(45deg);
   }
   100% {
-    transform: scale(0.96) rotate(90deg);
-    border-radius: 48% 52% 45% 55% / 55% 45% 55% 45%;
+    transform: scale3d(0.96, 0.96, 1) rotate(90deg);
   }
 }
 
 @keyframes aura-orbit {
   0% {
-    transform: translate(-25px, -25px) rotate(0deg) scale(0.9);
+    transform: translate3d(-25px, -25px, 0) rotate(0deg) scale(0.9);
   }
   33% {
-    transform: translate(35px, -20px) rotate(120deg) scale(1.1);
+    transform: translate3d(35px, -20px, 0) rotate(120deg) scale(1.08);
   }
   66% {
-    transform: translate(-20px, 30px) rotate(240deg) scale(0.95);
+    transform: translate3d(-20px, 30px, 0) rotate(240deg) scale(0.95);
   }
   100% {
-    transform: translate(-25px, -25px) rotate(360deg) scale(0.9);
+    transform: translate3d(-25px, -25px, 0) rotate(360deg) scale(0.9);
   }
 }
 
@@ -142,4 +141,9 @@ input[type='number']::-webkit-outer-spin-button {
 input[type='number'] {
   -moz-appearance: textfield;
   appearance: textfield;
+}
+
+/* Smooth Button Tactile Active State */
+button:active {
+  transition: transform 0.1s cubic-bezier(0.16, 1, 0.3, 1);
 }

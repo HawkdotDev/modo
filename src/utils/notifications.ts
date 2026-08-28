@@ -1,4 +1,5 @@
-import { audioEngine, ChimeStyle } from './audioEngine';
+import { audioEngine } from './audioEngine';
+import { StorageService } from '../services/storageService';
 
 export async function requestNotificationPermission(): Promise<boolean> {
   if (!('Notification' in window)) {
@@ -17,13 +18,7 @@ export function showNotification(title: string, options?: NotificationOptions) {
 
 export function playNotificationSound(type: 'work' | 'break' | 'session' | 'test' = 'test', volume: number = 0.7) {
   try {
-    let savedStyle: ChimeStyle = 'zen';
-    try {
-      savedStyle = (localStorage.getItem('modo_chime_style') as ChimeStyle) || 'zen';
-    } catch (e) {
-      console.warn('Failed to retrieve chime style preference:', e);
-    }
-
+    const savedStyle = StorageService.getChimeStyle();
     audioEngine.playChime(savedStyle, type, volume);
   } catch (err) {
     console.warn('Audio playback error:', err);

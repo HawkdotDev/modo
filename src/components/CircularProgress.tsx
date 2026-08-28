@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, memo } from 'react';
 
 interface CircularProgressProps {
   progress: number;
@@ -9,9 +9,11 @@ interface CircularProgressProps {
   size?: number;
   smooth?: boolean;
   isRunning?: boolean;
+  showGlow?: boolean;
+  showRing?: boolean;
 }
 
-export function CircularProgress({
+export const CircularProgress = memo(function CircularProgress({
   progress,
   isBreak,
   workColor,
@@ -19,7 +21,9 @@ export function CircularProgress({
   children,
   size = 420,
   smooth = true,
-  isRunning = false
+  isRunning = false,
+  showGlow = true,
+  showRing = true
 }: CircularProgressProps) {
   const strokeWidth = 11;
   const radius = size / 2;
@@ -30,44 +34,56 @@ export function CircularProgress({
   const filterId = `glow-${isBreak ? 'break' : 'work'}`;
 
   return (
-    <div className="relative inline-flex items-center justify-center select-none group">
-      {/* Inner ambient glow */}
+    <div className="relative inline-flex items-center justify-center select-none group will-change-transform" role="presentation">
+      {/* Inner ambient glow with smooth GPU transitions */}
       <div 
-        className="absolute rounded-full pointer-events-none transition-all duration-1000"
+        aria-hidden="true"
+        className="absolute rounded-full pointer-events-none transition-all duration-1000 ease-out"
         style={{
           width: `${size * 0.78}px`,
           height: `${size * 0.78}px`,
           backgroundColor: activeColor,
-          opacity: 0.06,
-          filter: 'blur(35px)'
+          opacity: showGlow ? 0.07 : 0,
+          filter: 'blur(36px)',
+          transform: 'translateZ(0)'
         }}
       />
 
       {/* Inner Frosted Glass Disc */}
       <div 
-        className="absolute rounded-full border border-white/[0.06] bg-black/40 backdrop-blur-xl shadow-2xl transition-all duration-500"
+        aria-hidden="true"
+        className="absolute rounded-full border border-white/[0.07] bg-black/45 backdrop-blur-2xl shadow-2xl transition-all duration-500 ease-out"
         style={{
           width: `${size * 0.82}px`,
           height: `${size * 0.82}px`,
+          transform: 'translateZ(0)'
         }}
       />
 
-      <svg height={size} width={size} className="transform -rotate-90 relative z-10">
+      <svg 
+        aria-hidden="true"
+        role="presentation"
+        height={size} 
+        width={size} 
+        className="transform -rotate-90 relative z-10 will-change-transform"
+        shapeRendering="geometricPrecision"
+      >
         <defs>
           <filter id={filterId} x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="6" result="blur" />
+            <feGaussianBlur stdDeviation="5.5" result="blur" />
             <feComposite in="SourceGraphic" in2="blur" operator="over" />
           </filter>
         </defs>
 
         {/* Background Track */}
         <circle
-          stroke="rgba(255, 255, 255, 0.06)"
+          stroke={showRing ? 'rgba(255, 255, 255, 0.07)' : 'transparent'}
           fill="transparent"
           strokeWidth={strokeWidth}
           r={normalizedRadius}
           cx={radius}
           cy={radius}
+          style={{ transition: 'stroke 0.4s cubic-bezier(0.16, 1, 0.3, 1)' }}
         />
 
         {/* Active Progress Arc */}
@@ -79,21 +95,22 @@ export function CircularProgress({
           style={{ 
             strokeDashoffset,
             transition: smooth && isRunning
-              ? 'stroke 0.5s ease'
-              : 'stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.5s ease'
+              ? 'stroke 0.4s ease'
+              : 'stroke-dashoffset 0.6s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.4s ease',
+            willChange: 'stroke-dashoffset'
           }}
           strokeLinecap="round"
           r={normalizedRadius}
           cx={radius}
           cy={radius}
-          filter={`url(#${filterId})`}
+          filter={showGlow ? `url(#${filterId})` : undefined}
         />
       </svg>
 
       {/* Center Content */}
-      <div className="absolute z-20 flex flex-col items-center justify-center">
+      <div className="absolute z-20 flex flex-col items-center justify-center pointer-events-auto">
         {children}
       </div>
     </div>
   );
-}
+});

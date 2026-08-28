@@ -1,44 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { VideoItem, VideoBackgroundConfig } from '../types/video';
-import { videoPresets, defaultVideoConfig } from '../data/videoPresets';
-
-const STORAGE_KEY = 'modo_video_bg_config';
+import { videoPresets } from '../data/videoPresets';
+import { StorageService } from '../services/storageService';
 
 export function useVideoBackground() {
-  const [config, setConfig] = useState<VideoBackgroundConfig>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        // Ensure default properties exist
-        return {
-          ...defaultVideoConfig,
-          ...parsed,
-          selectedVideo: parsed.selectedVideo || videoPresets[0],
-          customVideos: parsed.customVideos || []
-        };
-      }
-    } catch (e) {
-      console.warn('Failed to load video background config from localStorage:', e);
-    }
-    return defaultVideoConfig;
-  });
+  const [config, setConfig] = useState<VideoBackgroundConfig>(() => StorageService.getVideoBackgroundConfig());
 
-  // Save to localStorage on config changes
+  // Save to StorageService on config changes
   useEffect(() => {
-    try {
-      // Avoid saving blob URLs directly to localStorage as they become invalid on reload
-      const configToSave = {
-        ...config,
-        selectedVideo: config.selectedVideo?.url?.startsWith('blob:')
-          ? videoPresets[0]
-          : config.selectedVideo,
-        customVideos: config.customVideos.filter(v => !v.url.startsWith('blob:'))
-      };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(configToSave));
-    } catch (e) {
-      console.warn('Failed to save video background config:', e);
-    }
+    StorageService.setVideoBackgroundConfig(config);
   }, [config]);
 
   const updateConfig = useCallback((partial: Partial<VideoBackgroundConfig>) => {

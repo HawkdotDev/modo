@@ -1,8 +1,8 @@
 <div align="center">
 
-# modo
+# Modo
 
-### *Aesthetic, Minimalist and Intelligent Focus Timer*
+### *Aesthetic Pomodoro Timer, Deep Work Studio & Ambient Soundscapes*
 
 [![React](https://img.shields.io/badge/React-18.3-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -11,26 +11,27 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-rose.svg?style=for-the-badge)](LICENSE)
 
 <p align="center">
-  <b>modo</b> is a Pomodoro and interval focus timer crafted for deep work, flow state, and sustained productivity. Built with an OLED dark aesthetic, organic ambient background glow animations, and an intelligent right-docked floating sidebar.
+  <b>Modo</b> is a minimalist, ultra-smooth Pomodoro timer and distraction-free deep work studio crafted for developers, writers, students, and flow-state practitioners.
 </p>
+
+[**Live Demo**](https://hawkdotdev.github.io/modo/) • [**Report Bug**](https://github.com/HawkdotDev/modo/issues) • [**Request Feature**](https://github.com/HawkdotDev/modo/issues)
 
 </div>
 
 ---
 
-## Highlights
+## Features
 
-- **Living Ambient Aura**: Dynamic multi-layer radial background glow with organic breathing and orbital light animations that smoothly follow the timer dial.
-- **Precision Circular Dial**: SVG circular progress ring with icon-only controls, real-time countdown, and discrete session indicators.
-- **Floating Right Dock Tabs**: Integrated vertical control center featuring:
-  - **Quick Adjust**: Routine templates (*Classic 25/5*, *Deep Focus 50/10*, *Sprint 15/3*, *Ultradian 90/20*), fine-tuning steppers (`±5m`, `±1m`), round counters, and audio volume sliders.
-  - **Preset Chains**: Build and run sequential, multi-stage productivity workflows.
-  - **Focus Presets**: Save custom routines with custom intervals, colors, and iterations.
-  - **Automated Schedules**: Set recurring alarms and automated session triggers (daily, weekly, monthly).
-  - **Color Aesthetics**: Granular RGB/HEX color pickers, neon presets, and Dark/Light theme switching.
-  - **Synthesized Audio**: Low-latency Web Audio API chime oscillators with volume slider and desktop notifications.
-- **OLED Dark Design System**: Frosted glass surfaces, backdrop blurs, and high-contrast typography.
-- **Adaptive Viewport**: Automatically centers the clock in the remaining visible screen space when expanding or collapsing the sidebar.
+- **Wall-Clock Timing Engine**: Zero-jitter hybrid 60 FPS foreground loop with background tab heartbeat interval. Accurate down to the millisecond with uninterrupted chimes when tabs are minimized or inactive.
+- **Synthesized Ambient Soundscapes**: Pure Web Audio generated Brownian Noise, Gentle Rain, Ocean Waves, and 432Hz Alpha Binaural Beats (10Hz focus difference) with idle auto-suspension to preserve CPU and battery.
+- **Harmonic Chimes & Audio Ducking**: Low-latency synthesized completion bells (Zen Bell, Tibetan Singing Bowl, Marimba, Digital Arpeggio) that automatically duck background soundscapes and music during alerts.
+- **Cinematic 4K Video Backgrounds**: Curated aesthetic video scenes with custom video upload support.
+- **Routine Chaining**: Sequence multiple focus and break intervals with customizable transition pauses for complex workflows.
+- **Automated Scheduling**: Set recurring study and deep work schedules with daily, weekly, or monthly recurrence.
+- **Modular Clock Styles & Themes**: Switch between Minimal Glowing Ring and Giant Focus Digits scenes, custom HEX accent colors, and dark/light modes.
+- **Dynamic Code-Splitting**: On-demand lazy-loaded sidebar panels with an initial application bundle of just 16.4 kB (gzipped).
+- **WCAG 2.1 AA Accessibility**: Full ARIA landmark support (role="timer", aria-live="polite", role="toolbar", skip links).
+- **Comprehensive Search Engine Optimization**: Pre-rendered semantic crawler shell, OpenGraph/Twitter social cards, WebApplication, HowTo, and FAQPage Schema.org JSON-LD knowledge graphs.
 
 ---
 
@@ -38,97 +39,72 @@
 
 ### Prerequisites
 - **Node.js**: `v18.0.0` or higher (or [Bun](https://bun.sh/))
-- **Package Manager**: `npm`, `pnpm`, `yarn`, or `bun`
+- **Package Manager**: `bun`, `npm`, `pnpm`, or `yarn`
 
-### Installation
+### Installation & Local Run
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/HawkdotDev/pomomer.git
-cd pomomer
+git clone https://github.com/HawkdotDev/modo.git
+cd modo
 
 # 2. Install dependencies
 bun install
-# or npm install / pnpm install / yarn
+# or: npm install
 
-# 3. Launch development server
+# 3. Start local development server
 bun run dev
-# or npm run dev
+# or: npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173) in your browser to run **modo**.
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ---
 
-## Build and Deployment
+## Build & Deployment
 
 ```bash
 # Type check and build production bundle
 bun run build
-# or npm run build
+# or: npm run build
 
 # Preview production build locally
 bun run preview
-# or npm run preview
+# or: npm run preview
 
-# Run code linter
+# Lint code
 bun run lint
 ```
 
-The optimized static build will be generated in the `dist/` directory, ready to deploy on **Vercel**, **Netlify**, **GitHub Pages**, or **Cloudflare Pages**.
+The optimized static build will be generated in the `dist/` directory, ready to deploy on GitHub Pages, Vercel, Netlify, or Cloudflare Pages.
 
 ---
 
-## Architectural Overview
+## Focus Templates Included
 
-| Component | Responsibility |
-| :--- | :--- |
-| [`src/App.tsx`](src/App.tsx) | Core state coordinator, theme state, scheduler integration, and ambient layout synchronization. |
-| [`src/components/TimerDisplay.tsx`](src/components/TimerDisplay.tsx) | Central dial with SVG circular progress ring, state indicators, and icon-only Reset/Play buttons. |
-| [`src/components/FloatingSidebar.tsx`](src/components/FloatingSidebar.tsx) | Right-anchored tab dock managing Quick Adjust, Chains, Presets, Schedules, Aesthetics, and Alerts. |
-| [`src/hooks/useTimer.ts`](src/hooks/useTimer.ts) | State engine managing active intervals, pauses, auto-transitions, and manual triggers. |
-| [`src/hooks/useScheduler.ts`](src/hooks/useScheduler.ts) | Background recurrence engine executing scheduled focus sessions. |
-| [`src/utils/notifications.ts`](src/utils/notifications.ts) | Pure Web Audio API synthesized chime sounds and Web Notifications handler. |
-
----
-
-## Preset Templates Included
-
-| Template Name | Focus Duration | Break Duration | Default Rounds | Best For |
+| Template | Focus Duration | Break Duration | Default Rounds | Best For |
 | :--- | :---: | :---: | :---: | :--- |
-| **Classic Pomodoro** | 25 min | 5 min | 4 rounds | Standard tasks, reading, structured study |
-| **Deep Focus** | 50 min | 10 min | 3 rounds | Coding, writing, complex problem solving |
-| **Sprint** | 15 min | 3 min | 4 rounds | Rapid reviews, email triage, inbox zero |
-| **Ultradian Rhythm**| 90 min | 20 min | 2 rounds | Creative flow, architecture, peak cognitive work |
+| **Classic Pomodoro** | 25 min | 5 min | 4 rounds | General study, reading, everyday tasks |
+| **Deep Work** | 50 min | 10 min | 3 rounds | Coding, writing, complex engineering |
+| **Sprint** | 15 min | 3 min | 4 rounds | Inbox zero, rapid code reviews, quick triage |
+| **Ultradian Rhythm** | 90 min | 20 min | 2 rounds | Peak creative flow and architecture sessions |
 
 ---
 
-## Technologies Used
+## Keyboard Shortcuts
 
-- **Framework**: [React 18](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
-- **Build Tool**: [Vite](https://vitejs.dev/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/) with custom glassmorphism and keyframe aura shaders
-- **Icons**: [Lucide React](https://lucide.dev/)
-- **Audio**: Web Audio API AudioContext Synthesizer (harmonic sine/triangle chime oscillators)
-- **Validation**: [Zod](https://zod.dev/)
-
----
-
-## Contributing
-
-Contributions, issues, and feature requests are welcome. Feel free to check out the [Issues page](https://github.com/HawkdotDev/pomomer/issues).
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/NewFeature`)
-3. Commit your Changes (`git commit -m 'Add some NewFeature'`)
-4. Push to the Branch (`git push origin feature/NewFeature`)
-5. Open a Pull Request
+| Key | Action |
+| :--- | :--- |
+| <kbd>Space</kbd> | Start / Pause Timer |
+| <kbd>R</kbd> | Reset Active Timer |
+| <kbd>F</kbd> | Toggle Fullscreen Mode |
+| <kbd>Esc</kbd> | Close Sidebar Panel / Exit Fullscreen |
 
 ---
 
 ## License
 
-Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more information.
+Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
 
 ---
 
@@ -136,4 +112,4 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more informa
 
 **Dwaipayan Dutta**
 - GitHub: [@HawkdotDev](https://github.com/HawkdotDev)
-- Project: [modo](https://github.com/HawkdotDev/pomomer)
+- Repository: [Modo](https://github.com/HawkdotDev/modo)

@@ -10,16 +10,33 @@ class AudioEngine {
   private soundscapeNodes: (AudioNode | number)[] = [];
   private masterVolume: number = 0.7;
   private soundscapeVolume: number = 0.5;
+  private suspendTimeout: number | null = null;
 
   private getContext(): AudioContext {
     if (!this.ctx) {
       const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       this.ctx = new AudioContextClass();
     }
+    if (this.suspendTimeout !== null) {
+      clearTimeout(this.suspendTimeout);
+      this.suspendTimeout = null;
+    }
     if (this.ctx.state === 'suspended') {
-      this.ctx.resume();
+      this.ctx.resume().catch(() => {});
     }
     return this.ctx;
+  }
+
+  private scheduleAutoSuspend(delayMs: number = 4000) {
+    if (this.suspendTimeout !== null) {
+      clearTimeout(this.suspendTimeout);
+    }
+    this.suspendTimeout = window.setTimeout(() => {
+      if (this.ctx && this.ctx.state === 'running' && this.activeSoundscapeType === 'none') {
+        this.ctx.suspend().catch(() => {});
+      }
+      this.suspendTimeout = null;
+    }, delayMs);
   }
 
   public setMasterVolume(vol: number) {
@@ -120,32 +137,36 @@ class AudioEngine {
           ? [523.25, 659.25, 783.99] 
           : type === 'break' 
           ? [783.99, 659.25, 523.25] 
-          : [523.25, 659.25, 783.99, 1046.50];
+          : [523.25, 659.25, 783.99, 1046.5];
 
-        notes.forEach((freq, index) => {
+        notes.forEach((freq, idx) => {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq, ctx.currentTime + index * 0.15);
-          gain.gain.setValueAtTime(0, ctx.currentTime + index * 0.15);
-          gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + index * 0.15 + 0.04);
-          gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + index * 0.15 + 0.6);
+          osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.15);
+
+          gain.gain.setValueAtTime(0, ctx.currentTime + idx * 0.15);
+          gain.gain.linearRampToValueAtTime(vol * 0.7, ctx.currentTime + idx * 0.15 + 0.03);
+          gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + idx * 0.15 + 2.0);
+
           osc.connect(gain);
           gain.connect(ctx.destination);
-          osc.start(ctx.currentTime + index * 0.15);
-          osc.stop(ctx.currentTime + index * 0.15 + 0.6);
+
+          osc.start(ctx.currentTime + idx * 0.15);
+          osc.stop(ctx.currentTime + idx * 0.15 + 2.0);
         });
       }
+
+      this.scheduleAutoSuspend(style === 'bowl' ? 3500 : 2500);
     } catch (err) {
-      console.warn('Chime playback error:', err);
+      console.warn('Chime generation error:', err);
     }
   }
 
-  // Ambient Focus Soundscapes
+  // Focus Ambient Soundscapes
   public startSoundscape(type: SoundscapeType) {
     this.stopSoundscape();
     if (type === 'none') {
-      this.activeSoundscapeType = 'none';
       return;
     }
 
@@ -285,7 +306,6 @@ class AudioEngine {
           try {
             (node as AudioScheduledSourceNode).stop();
           } catch (e) {
-            // Node already stopped
             console.debug('Node stop notice:', e);
           }
         }
@@ -293,7 +313,6 @@ class AudioEngine {
           try {
             node.disconnect();
           } catch (e) {
-            // Node already disconnected
             console.debug('Node disconnect notice:', e);
           }
         }
@@ -301,6 +320,7 @@ class AudioEngine {
     });
     this.soundscapeNodes = [];
     this.activeSoundscapeType = 'none';
+    this.scheduleAutoSuspend(1500);
   }
 
   public getActiveSoundscape(): SoundscapeType {

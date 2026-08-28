@@ -1,5 +1,6 @@
-import { Check, Sparkles, Circle, Monitor, Clock, Cpu, Coffee, Trees, Maximize2 } from 'lucide-react';
+import { Check, Sparkles, Circle, Maximize2 } from 'lucide-react';
 import { ClockStyle } from '../types/timer';
+import { getAvailableClockStyles } from './styles/registry';
 
 interface StyleSelectorProps {
   currentStyle: ClockStyle;
@@ -8,78 +9,10 @@ interface StyleSelectorProps {
   onClose?: () => void;
 }
 
-interface StyleOption {
-  id: ClockStyle;
-  name: string;
-  category: string;
-  desc: string;
-  icon: typeof Circle;
-  previewGradient: string;
-  tag?: string;
-}
-
-const styleOptions: StyleOption[] = [
-  {
-    id: 'minimal',
-    name: 'Minimal Ring',
-    category: 'Modern Glass',
-    desc: '420px glowing circular dial with millisecond progress',
-    icon: Circle,
-    previewGradient: 'from-rose-500/20 to-emerald-500/20',
-    tag: 'Default'
-  },
-  {
-    id: 'lofi',
-    name: 'Lofi Study Room',
-    category: 'Aesthetic Scene',
-    desc: 'Cozy study girl desk with window rain & warm lamp',
-    icon: Monitor,
-    previewGradient: 'from-amber-600/30 to-purple-800/30',
-    tag: 'Popular'
-  },
-  {
-    id: 'flip',
-    name: 'Retro Flip Clock',
-    category: 'Mechanical',
-    desc: 'Tactile split-flap cards with 3D mechanical roll',
-    icon: Clock,
-    previewGradient: 'from-neutral-800 to-neutral-900',
-    tag: 'Vintage'
-  },
-  {
-    id: 'cyber',
-    name: 'Cyberpunk HUD',
-    category: 'Futuristic',
-    desc: 'Laser holographic grid with glowing neon cyber dial',
-    icon: Cpu,
-    previewGradient: 'from-cyan-500/20 to-fuchsia-500/20',
-    tag: 'Sci-Fi'
-  },
-  {
-    id: 'cafe',
-    name: 'Cozy Coffeehouse',
-    category: 'Atmosphere',
-    desc: 'Rainy cafe window sill with warm amber bokeh',
-    icon: Coffee,
-    previewGradient: 'from-amber-900/40 to-stone-900/40',
-  },
-  {
-    id: 'zen',
-    name: 'Zen Nature & Stone',
-    category: 'Serenity',
-    desc: 'Minimal Japanese stone circle with calm breathing pulse',
-    icon: Trees,
-    previewGradient: 'from-emerald-950 to-teal-900',
-  },
-  {
-    id: 'giant',
-    name: 'Giant Focus Digits',
-    category: 'Ultra-Minimal',
-    desc: 'Huge edge-to-edge typography for distraction-free flow',
-    icon: Maximize2,
-    previewGradient: 'from-neutral-900 to-black',
-  },
-];
+const STYLE_ICONS: Record<string, typeof Circle> = {
+  minimal: Circle,
+  giant: Maximize2
+};
 
 export function StyleSelector({
   currentStyle,
@@ -87,6 +20,8 @@ export function StyleSelector({
   accentColor = '#f43f5e',
   onClose
 }: StyleSelectorProps) {
+  const availableStyles = getAvailableClockStyles();
+
   return (
     <div className="flex flex-col gap-4 w-full">
       {/* Header */}
@@ -109,15 +44,15 @@ export function StyleSelector({
 
       {/* Style Grid */}
       <div className="grid grid-cols-1 gap-2.5">
-        {styleOptions.map((style) => {
+        {availableStyles.map((style) => {
           const isSelected = currentStyle === style.id;
-          const Icon = style.icon;
+          const Icon = STYLE_ICONS[style.id] || Circle;
 
           return (
             <button
               key={style.id}
               type="button"
-              onClick={() => onSelectStyle(style.id)}
+              onClick={() => onSelectStyle(style.id as ClockStyle)}
               className={`p-3.5 rounded-2xl border text-left transition-all duration-200 relative overflow-hidden group ${
                 isSelected
                   ? 'border-white/30 shadow-lg'
@@ -182,8 +117,8 @@ export function StyleSelector({
       </div>
 
       <div className="p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06] text-[11px] text-neutral-400 flex items-center gap-2">
-        <Sparkles size={14} style={{ color: accentColor }} className="shrink-0" />
-        <span>Switching styles changes the interactive stage and clock typography in real-time.</span>
+        <Sparkles size={14} style={{ color: accentColor }} className="shrink-0 animate-pulse" />
+        <span>More on the way — additional clock styles are coming soon!</span>
       </div>
     </div>
   );

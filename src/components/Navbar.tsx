@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 export function PomodoroIcon({ className = "w-7 h-7" }: { className?: string }) {
   return (
     <svg 
@@ -53,21 +55,21 @@ interface NavbarProps {
   accentColor?: string;
 }
 
-export function Navbar({ accentColor = '#f43f5e' }: NavbarProps) {
+export const Navbar = memo(function Navbar({ accentColor = '#f43f5e' }: NavbarProps) {
   return (
-    <header className="fixed top-5 left-5 sm:top-6 sm:left-6 z-40 flex items-center gap-2.5 select-none pointer-events-auto">
+    <header className="fixed top-5 left-5 sm:top-6 sm:left-6 z-40 flex items-center gap-2.5 select-none pointer-events-auto group cursor-default">
       <div 
         style={{ 
           color: accentColor, 
           filter: `drop-shadow(0 0 12px ${accentColor}80)` 
         }}
-        className="transition-all duration-500"
+        className="transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 group-active:scale-95"
       >
         <PomodoroIcon className="w-7 h-7" />
       </div>
-      <span className="font-bold text-xl tracking-tight bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent">
+      <h1 className="font-bold text-xl tracking-tight bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent group-hover:brightness-125 transition-all duration-300 m-0 leading-none">
         modo
-      </span>
+      </h1>
     </header>
   );
-}
+});

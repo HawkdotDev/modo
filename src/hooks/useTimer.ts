@@ -31,10 +31,11 @@ export function useTimer(initialSettings: TimerSettings, callbacks?: TimerCallba
   const [isComplete, setIsComplete] = useState(false);
   const [waitingForManualStart, setWaitingForManualStart] = useState(false);
 
-  // Milliseconds precision state ref
+  // High-precision timestamps & refs
   const remainingMsRef = useRef(initialTotalSeconds * 1000);
-  const lastTimeRef = useRef<number | null>(null);
+  const endTimeRef = useRef<number | null>(null);
   const animationFrameIdRef = useRef<number | null>(null);
+  const backgroundIntervalIdRef = useRef<number | null>(null);
   const prevSecondsRef = useRef<number>(initialTotalSeconds);
 
   const callbacksRef = useRef(callbacks);
@@ -68,15 +69,19 @@ export function useTimer(initialSettings: TimerSettings, callbacks?: TimerCallba
     setTimeLeft(initialSec);
     prevSecondsRef.current = initialSec;
     remainingMsRef.current = initialSec * 1000;
+    endTimeRef.current = null;
     setIsRunning(false);
     setProgress(1);
     setCurrentIteration(1);
     setIsComplete(false);
     setWaitingForManualStart(false);
-    lastTimeRef.current = null;
     if (animationFrameIdRef.current) {
       cancelAnimationFrame(animationFrameIdRef.current);
       animationFrameIdRef.current = null;
+    }
+    if (backgroundIntervalIdRef.current) {
+      clearInterval(backgroundIntervalIdRef.current);
+      backgroundIntervalIdRef.current = null;
     }
   }, [settings.workMinutes, settings.workSeconds]);
 
@@ -90,18 +95,19 @@ export function useTimer(initialSettings: TimerSettings, callbacks?: TimerCallba
       setTimeLeft(newTotal);
       prevSecondsRef.current = newTotal;
       remainingMsRef.current = newTotal * 1000;
+      endTimeRef.current = null;
       setProgress(1);
     }
   }, [isRunning, isBreak]);
 
-  const toggleTimer = () => {
+  const toggleTimer = useCallback(() => {
     if (waitingForManualStart) {
       setWaitingForManualStart(false);
     }
     setIsRunning((prev) => !prev);
-  };
+  }, [waitingForManualStart]);
 
-  // Only update timeLeft if initialSettings actually changed (preset / durations changed)
+  // Sync settings when initialSettings change
   useEffect(() => {
     const prev = prevSettingsRef.current;
     const hasChanged = 
@@ -123,31 +129,81 @@ export function useTimer(initialSettings: TimerSettings, callbacks?: TimerCallba
         setTimeLeft(newTotal);
         prevSecondsRef.current = newTotal;
         remainingMsRef.current = newTotal * 1000;
+        endTimeRef.current = null;
         setProgress(1);
       }
     }
   }, [initialSettings, isRunning, isBreak]);
 
-  // High-precision Continuous Animation Frame Loop (60 FPS)
+  // Handle phase completion transition
+  const handlePhaseComplete = useCallback(() => {
+    const curBreak = isBreakRef.current;
+    const curIteration = currentIterationRef.current;
+    const curSettings = settingsRef.current;
+
+    if (curBreak) {
+      callbacksRef.current?.onBreakComplete?.();
+      setIsBreak(false);
+      const nextSec = curSettings.workMinutes * 60 + curSettings.workSeconds;
+      setTimeLeft(nextSec);
+      prevSecondsRef.current = nextSec;
+      remainingMsRef.current = nextSec * 1000;
+      endTimeRef.current = performance.now() + nextSec * 1000;
+      setProgress(1);
+      setCurrentIteration((prev) => prev + 1);
+      if (curSettings.requireManualStart) {
+        setWaitingForManualStart(true);
+        setIsRunning(false);
+        endTimeRef.current = null;
+      }
+    } else {
+      if (curIteration < curSettings.iterations) {
+        callbacksRef.current?.onWorkComplete?.();
+        setIsBreak(true);
+        const nextBreakSec = curSettings.breakMinutes * 60 + curSettings.breakSeconds;
+        setTimeLeft(nextBreakSec);
+        prevSecondsRef.current = nextBreakSec;
+        remainingMsRef.current = nextBreakSec * 1000;
+        endTimeRef.current = performance.now() + nextBreakSec * 1000;
+        setProgress(1);
+        if (curSettings.requireManualStart) {
+          setWaitingForManualStart(true);
+          setIsRunning(false);
+          endTimeRef.current = null;
+        }
+      } else {
+        callbacksRef.current?.onSessionComplete?.();
+        setIsComplete(true);
+        setIsRunning(false);
+        endTimeRef.current = null;
+      }
+    }
+  }, []);
+
+  // Wall-Clock Precision Loop (combines requestAnimationFrame 60fps foreground + setInterval background resilience)
   useEffect(() => {
     if (!isRunning || waitingForManualStart) {
-      lastTimeRef.current = null;
+      endTimeRef.current = null;
       if (animationFrameIdRef.current) {
         cancelAnimationFrame(animationFrameIdRef.current);
         animationFrameIdRef.current = null;
       }
+      if (backgroundIntervalIdRef.current) {
+        clearInterval(backgroundIntervalIdRef.current);
+        backgroundIntervalIdRef.current = null;
+      }
       return;
     }
 
-    const tick = (now: number) => {
-      if (lastTimeRef.current === null) {
-        lastTimeRef.current = now;
-      }
-      const delta = now - lastTimeRef.current;
-      lastTimeRef.current = now;
+    if (endTimeRef.current === null) {
+      endTimeRef.current = performance.now() + remainingMsRef.current;
+    }
 
-      remainingMsRef.current = Math.max(0, remainingMsRef.current - delta);
-      const currentRemaining = remainingMsRef.current;
+    const processTick = () => {
+      if (endTimeRef.current === null) return;
+      const now = performance.now();
+      const currentRemaining = Math.max(0, endTimeRef.current - now);
+      remainingMsRef.current = currentRemaining;
 
       const currentSeconds = Math.ceil(currentRemaining / 1000);
       if (prevSecondsRef.current !== currentSeconds) {
@@ -165,58 +221,33 @@ export function useTimer(initialSettings: TimerSettings, callbacks?: TimerCallba
       }
 
       if (currentRemaining <= 0) {
-        const curBreak = isBreakRef.current;
-        const curIteration = currentIterationRef.current;
-        const curSettings = settingsRef.current;
-
-        if (curBreak) {
-          callbacksRef.current?.onBreakComplete?.();
-          setIsBreak(false);
-          const nextSec = curSettings.workMinutes * 60 + curSettings.workSeconds;
-          setTimeLeft(nextSec);
-          prevSecondsRef.current = nextSec;
-          remainingMsRef.current = nextSec * 1000;
-          setProgress(1);
-          setCurrentIteration((prev) => prev + 1);
-          if (curSettings.requireManualStart) {
-            setWaitingForManualStart(true);
-            setIsRunning(false);
-          }
-        } else {
-          if (curIteration < curSettings.iterations) {
-            callbacksRef.current?.onWorkComplete?.();
-            setIsBreak(true);
-            const nextBreakSec = curSettings.breakMinutes * 60 + curSettings.breakSeconds;
-            setTimeLeft(nextBreakSec);
-            prevSecondsRef.current = nextBreakSec;
-            remainingMsRef.current = nextBreakSec * 1000;
-            setProgress(1);
-            if (curSettings.requireManualStart) {
-              setWaitingForManualStart(true);
-              setIsRunning(false);
-            }
-          } else {
-            callbacksRef.current?.onSessionComplete?.();
-            setIsComplete(true);
-            setIsRunning(false);
-          }
-        }
-        lastTimeRef.current = null;
-        return;
+        handlePhaseComplete();
       }
-
-      animationFrameIdRef.current = requestAnimationFrame(tick);
     };
 
-    animationFrameIdRef.current = requestAnimationFrame(tick);
+    const animTick = () => {
+      processTick();
+      if (isRunning && !waitingForManualStart) {
+        animationFrameIdRef.current = requestAnimationFrame(animTick);
+      }
+    };
+
+    animationFrameIdRef.current = requestAnimationFrame(animTick);
+
+    // Fallback interval for background tab throttling
+    backgroundIntervalIdRef.current = window.setInterval(processTick, 500);
 
     return () => {
       if (animationFrameIdRef.current) {
         cancelAnimationFrame(animationFrameIdRef.current);
         animationFrameIdRef.current = null;
       }
+      if (backgroundIntervalIdRef.current) {
+        clearInterval(backgroundIntervalIdRef.current);
+        backgroundIntervalIdRef.current = null;
+      }
     };
-  }, [isRunning, waitingForManualStart, smoothProgress]);
+  }, [isRunning, waitingForManualStart, smoothProgress, handlePhaseComplete]);
 
   return {
     isBreak,
