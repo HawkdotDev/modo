@@ -110,6 +110,6 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
 
 ## Author
 
-**Dwaipayan Dutta**
+**HawkdotDev**
 - GitHub: [@HawkdotDev](https://github.com/HawkdotDev)
 - Repository: [Modo](https://github.com/HawkdotDev/modo)
