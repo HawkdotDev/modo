@@ -102,12 +102,11 @@ export const Navbar = memo(function Navbar({ accentColor = '#f43f5e' }: NavbarPr
         href="https://github.com/HawkdotDev/modo"
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-neutral-400 hover:text-white hover:bg-white/[0.06] border border-transparent hover:border-white/[0.1] backdrop-blur-md transition-all duration-200 hover:scale-105 active:scale-95 text-xs font-medium group"
-        title="View source on GitHub"
-        aria-label="View source on GitHub"
+        className="p-2 rounded-xl text-neutral-400 hover:text-white bg-white/[0.03] hover:bg-white/[0.1] border border-white/[0.06] hover:border-white/20 backdrop-blur-xl shadow-sm transition-all duration-300 hover:scale-110 active:scale-90 flex items-center justify-center group"
+        title="View Modo on GitHub"
+        aria-label="View Modo on GitHub"
       >
-        <GithubIcon className="w-3.5 h-3.5 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-200 text-neutral-300 group-hover:text-white" />
-        <span className="hidden sm:inline">GitHub</span>
+        <GithubIcon className="w-4 h-4 text-neutral-400 group-hover:text-white group-hover:rotate-6 transition-all duration-200" />
       </a>
     </header>
   );
