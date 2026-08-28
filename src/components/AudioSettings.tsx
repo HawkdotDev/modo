@@ -146,11 +146,13 @@ export function AudioSettings({
                   Chime Volume
                 </label>
                 <button
+                  type="button"
                   onClick={handleTestChime}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-xs text-white font-medium active:scale-95 transition-all"
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.08] hover:bg-white/[0.16] hover:scale-105 active:scale-95 text-xs text-white font-medium transition-all duration-200 group"
                   title="Test chime sound"
+                  aria-label="Test chime sound"
                 >
-                  <Play size={11} className="fill-current" />
+                  <Play size={11} className="fill-current group-hover:scale-110 transition-transform" />
                   Test Chime
                 </button>
               </div>
@@ -165,7 +167,7 @@ export function AudioSettings({
                   value={volume}
                   onChange={(e) => onVolumeChange(parseFloat(e.target.value))}
                   aria-label="Chime Volume"
-                  className="w-full h-1.5 bg-white/[0.1] rounded-lg appearance-none cursor-pointer"
+                  className="w-full h-1.5 bg-white/[0.1] rounded-lg appearance-none cursor-pointer hover:bg-white/[0.15] transition-colors"
                   style={{ accentColor }}
                   title="Adjust chime volume"
                 />
@@ -178,21 +180,23 @@ export function AudioSettings({
             {/* Chime Sound Style Selector */}
             <div className="space-y-2 pt-1">
               <label className="text-[11px] font-semibold text-neutral-400 uppercase tracking-wider flex items-center gap-1.5">
-                <Sparkles size={12} style={{ color: accentColor }} />
+                <Sparkles size={12} style={{ color: accentColor }} className="animate-flame-flicker" />
                 Chime Soundpack
               </label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-2" role="radiogroup" aria-label="Chime Soundpack Options">
                 {chimeOptions.map((opt) => {
                   const isSelected = selectedChime === opt.id;
                   return (
                     <button
                       key={opt.id}
                       type="button"
+                      role="radio"
+                      aria-checked={isSelected}
                       onClick={() => handleSelectChime(opt.id)}
-                      className={`p-2.5 rounded-xl border text-left transition-all ${
+                      className={`p-2.5 rounded-xl border text-left transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] ${
                         isSelected
                           ? 'text-white shadow-sm'
-                          : 'bg-white/[0.03] hover:bg-white/[0.07] border-white/[0.06] text-neutral-300'
+                          : 'bg-white/[0.03] hover:bg-white/[0.07] border-white/[0.06] hover:border-white/15 text-neutral-300'
                       }`}
                       style={isSelected ? {
                         backgroundColor: `${accentColor}20`,
@@ -214,7 +218,7 @@ export function AudioSettings({
                 Chime Triggers
               </label>
 
-              <div className="flex items-center justify-between py-1 border-b border-white/[0.04]">
+              <div className="flex items-center justify-between py-1 border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors rounded-lg px-1">
                 <div>
                   <span className="text-xs font-semibold text-neutral-200 block">Focus round completed</span>
                   <span className="text-[10px] text-neutral-400">Play chime when focus round ends</span>
@@ -228,7 +232,7 @@ export function AudioSettings({
                 )}
               </div>
 
-              <div className="flex items-center justify-between py-1 border-b border-white/[0.04]">
+              <div className="flex items-center justify-between py-1 border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors rounded-lg px-1">
                 <div>
                   <span className="text-xs font-semibold text-neutral-200 block">Break interval completed</span>
                   <span className="text-[10px] text-neutral-400">Play chime when break finishes</span>
@@ -242,7 +246,7 @@ export function AudioSettings({
                 )}
               </div>
 
-              <div className="flex items-center justify-between py-1">
+              <div className="flex items-center justify-between py-1 hover:bg-white/[0.02] transition-colors rounded-lg px-1">
                 <div>
                   <span className="text-xs font-semibold text-neutral-200 block">All iterations completed</span>
                   <span className="text-[10px] text-neutral-400">Play chime on full session completion</span>
@@ -263,21 +267,21 @@ export function AudioSettings({
       {/* Ambient Soundscapes Section */}
       <div className="space-y-2 pt-1">
         <label className="text-xs font-semibold text-neutral-400 uppercase tracking-wider flex items-center gap-1.5">
-          <Headphones size={13} style={{ color: accentColor }} />
+          <Headphones size={13} style={{ color: accentColor }} className="animate-pulse-subtle" />
           Ambient Soundscapes (Synthesized)
         </label>
         
-        <div className="grid grid-cols-1 gap-2">
+        <div className="grid grid-cols-1 gap-2" role="group" aria-label="Ambient Soundscapes">
           {soundscapes.map((scape) => {
             const Icon = scape.icon;
             const isPlaying = activeSoundscape === scape.id;
             return (
               <div
                 key={scape.id}
-                className={`p-3 rounded-2xl border transition-all flex items-center justify-between ${
+                className={`p-3 rounded-2xl border transition-all duration-200 flex items-center justify-between hover:scale-[1.01] ${
                   isPlaying
                     ? 'border-white/20 bg-white/[0.08] shadow-md'
-                    : 'bg-white/[0.03] hover:bg-white/[0.06] border-white/[0.06]'
+                    : 'bg-white/[0.03] hover:bg-white/[0.06] border-white/[0.06] hover:border-white/15'
                 }`}
                 style={isPlaying ? {
                   borderColor: `${accentColor}80`,
@@ -286,10 +290,10 @@ export function AudioSettings({
               >
                 <div className="flex items-center gap-3">
                   <div 
-                    className="p-2 rounded-xl bg-white/[0.05] border border-white/[0.08]"
+                    className="p-2 rounded-xl bg-white/[0.05] border border-white/[0.08] transition-all duration-200"
                     style={isPlaying ? { color: accentColor, backgroundColor: `${accentColor}25` } : { color: '#a3a3a3' }}
                   >
-                    <Icon size={16} className={isPlaying ? 'animate-pulse' : ''} />
+                    <Icon size={16} className={isPlaying ? 'animate-flame-flicker' : ''} />
                   </div>
                   <div>
                     <span className="text-xs font-semibold text-white block">{scape.name}</span>
@@ -300,7 +304,7 @@ export function AudioSettings({
                 <button
                   type="button"
                   onClick={() => handleSelectSoundscape(scape.id)}
-                  className={`p-2 rounded-xl flex items-center justify-center transition-all active:scale-95 ${
+                  className={`p-2 rounded-xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-90 ${
                     isPlaying 
                       ? 'text-white shadow-md' 
                       : 'bg-white/[0.08] hover:bg-white/[0.14] text-neutral-300'
@@ -310,6 +314,7 @@ export function AudioSettings({
                     boxShadow: `0 0 12px ${accentColor}80`
                   } : {}}
                   title={isPlaying ? 'Stop soundscape' : 'Play soundscape'}
+                  aria-label={isPlaying ? `Stop ${scape.name}` : `Play ${scape.name}`}
                 >
                   {isPlaying ? <Square size={13} className="fill-current" /> : <Play size={13} className="fill-current ml-0.5" />}
                 </button>

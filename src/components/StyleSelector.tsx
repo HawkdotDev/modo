@@ -53,10 +53,11 @@ export function StyleSelector({
               key={style.id}
               type="button"
               onClick={() => onSelectStyle(style.id as ClockStyle)}
-              className={`p-3.5 rounded-2xl border text-left transition-all duration-200 relative overflow-hidden group ${
+              aria-pressed={isSelected}
+              className={`p-3.5 rounded-2xl border text-left transition-all duration-200 relative overflow-hidden group hover:scale-[1.02] active:scale-[0.98] ${
                 isSelected
                   ? 'border-white/30 shadow-lg'
-                  : 'bg-white/[0.03] hover:bg-white/[0.07] border-white/[0.06] hover:border-white/15'
+                  : 'bg-white/[0.03] hover:bg-white/[0.07] border-white/[0.06] hover:border-white/20'
               }`}
               style={isSelected ? {
                 backgroundColor: `${accentColor}15`,
@@ -67,7 +68,7 @@ export function StyleSelector({
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-start gap-3">
                   <div
-                    className="p-2.5 rounded-xl border shrink-0 transition-all"
+                    className="p-2.5 rounded-xl border shrink-0 transition-all duration-200 group-hover:scale-110"
                     style={isSelected ? {
                       backgroundColor: `${accentColor}25`,
                       borderColor: `${accentColor}60`,
@@ -78,15 +79,15 @@ export function StyleSelector({
                       color: '#a3a3a3'
                     }}
                   >
-                    <Icon size={18} className={isSelected ? 'animate-pulse' : ''} />
+                    <Icon size={18} className={isSelected ? 'animate-pulse-subtle' : ''} />
                   </div>
 
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-semibold text-white">{style.name}</span>
+                      <span className="text-sm font-semibold text-white group-hover:text-white transition-colors">{style.name}</span>
                       {style.tag && (
                         <span
-                          className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md border"
+                          className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md border animate-pulse-subtle"
                           style={{
                             backgroundColor: `${accentColor}20`,
                             borderColor: `${accentColor}40`,
@@ -103,8 +104,8 @@ export function StyleSelector({
                 </div>
 
                 <div
-                  className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-all ${
-                    isSelected ? 'text-white shadow-sm' : 'border border-white/15 bg-white/[0.02]'
+                  className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-all duration-200 group-hover:scale-110 ${
+                    isSelected ? 'text-white shadow-sm scale-105' : 'border border-white/15 bg-white/[0.02]'
                   }`}
                   style={isSelected ? { backgroundColor: accentColor } : {}}
                 >
@@ -116,8 +117,8 @@ export function StyleSelector({
         })}
       </div>
 
-      <div className="p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06] text-[11px] text-neutral-400 flex items-center gap-2">
-        <Sparkles size={14} style={{ color: accentColor }} className="shrink-0 animate-pulse" />
+      <div className="p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06] text-[11px] text-neutral-400 flex items-center gap-2 hover:border-white/10 transition-all duration-200">
+        <Sparkles size={14} style={{ color: accentColor }} className="shrink-0 animate-flame-flicker" />
         <span>More on the way — additional clock styles are coming soon!</span>
       </div>
     </div>
